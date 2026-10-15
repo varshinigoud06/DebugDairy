@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | DebugDairy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-body">
+
+    <div class="app-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a class="sidebar-brand" href="dashboard.html">
+                <span class="brand-mark">✳</span>
+                <span>DebugDairy</span>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a class="nav-link active" href="dashboard.html">
+                    <span>▦</span> Dashboard
+                </a>
+                <a class="nav-link" href="new-analysis.html">
+                    <span>⌘</span> New Analysis
+                </a>
+                <a class="nav-link" href="my-learning.html">
+                    <span>▤</span> My Learning
+                </a>
+                <a class="nav-link" href="analytics.html">
+                    <span>▥</span> Analytics
+                </a>
+                <a class="nav-link" href="recurring-mistakes.html">
+                    <span>↻</span> Recurring Mistakes
+                </a>
+                <a class="nav-link" href="practice.html">
+                    <span>◎</span> Practice
+                </a>
+            </nav>
+
+            <div class="sidebar-user">
+                <div class="user-avatar">S</div>
+                <div>
+                    <strong>Student</strong>
+                    <small>Keep learning!</small>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="dashboard-main">
+
+            <header class="topbar">
+                <div>
+                    <span class="breadcrumb">Workspace</span>
+                    <h2>Dashboard</h2>
+                </div>
+                <div class="topbar-actions">
+                    <span class="date-chip" id="currentDate">Today</span>
+                    <button class="icon-button" type="button"
+                            aria-label="Notifications">♧</button>
+                    <div class="topbar-avatar">S</div>
+                </div>
+            </header>
+
+            <section class="welcome-row">
+                <div>
+                    <h1>Hello, Student! 👋</h1>
+                    <p>Keep going! Every mistake makes you stronger.</p>
+                </div>
+                <a class="primary-button" href="new-analysis.html">
+    + New Analysis
+</a>
+            </section>
+
+            <!-- STATISTIC CARDS -->
+            <section class="stats-grid" aria-label="Learning summary">
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-icon green">✓</span>
+                        <span class="stat-label">Total Mistakes</span>
+                    </div>
+                    <div class="stat-number" id="totalAnalyses">0</div>
+                    <p class="stat-note">Recorded in your journal</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-icon blue">▣</span>
+                        <span class="stat-label">This Week</span>
+                    </div>
+                    <div class="stat-number" id="weeklyAnalyses">0</div>
+                    <p class="stat-note">Mistakes analyzed this week</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-icon orange">♨</span>
+                        <span class="stat-label">Learning Streak</span>
+                    </div>
+                    <div class="stat-number" id="dashboardStreak">0 days</div>
+                    <p class="stat-note">Keep the streak going!</p>
+                </article>
+
+                
+<article class="stat-card">
+    <div class="stat-top">
+        <span class="stat-icon purple">↗</span>
+        <span class="stat-label">Analyses Today</span>
+    </div>
+    <div class="stat-number" id="analysesToday">0</div>
+    <p class="stat-note">Code analyses completed today</p>
+</article>
+
+
+            </section>
+
+            <!-- CHART AND RECENT MISTAKES -->
+            <section class="dashboard-grid">
+
+                <article class="panel category-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Mistake Categories</h3>
+                            <p>Understand where you need practice</p>
+                        </div>
+                    </div>
+
+                    <div class="category-content">
+                        <div class="pie-chart" id="mistakeCategoryChart" role="img"
+                             aria-label="Mistake categories: Logic 33 percent, Syntax 25 percent, Concept 21 percent, Input 13 percent, Other 8 percent">
+                        </div>
+
+                       
+<div class="chart-legend" id="chartLegend">
+    <div><span class="legend-dot logic"></span><span>Logic</span><strong>0%</strong></div>
+    <div><span class="legend-dot syntax"></span><span>Syntax</span><strong>0%</strong></div>
+    <div><span class="legend-dot runtime"></span><span>Runtime</span><strong>0%</strong></div>
+    <div><span class="legend-dot input"></span><span>Input</span><strong>0%</strong></div>
+    <div><span class="legend-dot other"></span><span>Others</span><strong>0%</strong></div>
+</div>
+
+                    </div>
+
+                    <a class="panel-footer-link" href="analytics.html">
+                        Explore learning analytics →
+                    </a>
+                </article>
+
+                <article class="panel recent-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Recent Mistakes</h3>
+                            <p>Your latest coding error records</p>
+                        </div>
+                    </div>
+
+                    
+<div class="mistake-list" id="recentMistakesList">
+    <p>Loading recent analyses...</p>
+</div>
+
+                   <a class="panel-footer-link" href="my-learning.html">
+    Open my learning →
+</a>
+                </article>
+
+            </section>
+
+            <!-- LEARNING TIP -->
+            <section class="learning-tip">
+                <div class="tip-icon">✦</div>
+                <div>
+                    <h3>Small mistakes. Big progress.</h3>
+                    <p>
+                        Review your recurring errors, understand the concept,
+                        and practice until you feel confident.
+                    </p>
+                </div>
+                <a href="recurring-mistakes.html" class="tip-link">
+                    Review weak areas →
+                </a>
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>DebugDairy</span>
+                <span>Learn from every coding mistake.</span>
+            </footer>
+
+        </main>
+    </div>
+
+    
+<script>
+    // Display today's date
+    const dateElement = document.getElementById("currentDate");
+
+    dateElement.textContent = new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    }).format(new Date());
+
+    // Load the real analysis count from the backend
+    async function loadDashboardSummary() {
+        try {
+            const response = await fetch(
+                "http://localhost:8081/api/analytics/summary"
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to load dashboard summary");
+            }
+
+            const data = await response.json();
+
+            document.getElementById("totalAnalyses").textContent =
+                data.totalAnalyses ?? 0;
+
+        } catch (error) {
+            console.error("Dashboard summary error:", error);
+            document.getElementById("totalAnalyses").textContent = "—";
+        }
+    }
+
+    loadDashboardSummary();
+    
+async function loadWeeklyAnalyses() {
+    const weeklyElement = document.getElementById("weeklyAnalyses");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analyses");
+        }
+
+        const records = await response.json();
+
+        const now = new Date();
+        const startOfWeek = new Date(now);
+        const day = (now.getDay() + 6) % 7; // Monday = 0
+
+        startOfWeek.setDate(now.getDate() - day);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const weeklyCount = records.filter(record => {
+            const date = new Date(record.created_at || record.createdAt);
+            return !Number.isNaN(date.getTime())
+                && date >= startOfWeek
+                && date <= now;
+        }).length;
+
+        weeklyElement.textContent = weeklyCount;
+
+    } catch (error) {
+        console.error("Weekly analyses error:", error);
+        weeklyElement.textContent = "—";
+    }
+}
+loadWeeklyAnalyses();
+
+async function loadDashboardStreak() {
+    const streakElement = document.getElementById("dashboardStreak");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analysis records");
+        }
+
+        const records = await response.json();
+
+        const activityDates = new Set(
+            records
+                .map(record => record.created_at || record.createdAt)
+                .filter(Boolean)
+                .map(value => {
+                    const date = new Date(value);
+                    if (Number.isNaN(date.getTime())) return null;
+
+                    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+                })
+                .filter(Boolean)
+        );
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const dateKey = date =>
+            `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        if (!activityDates.has(dateKey(today)) &&
+            !activityDates.has(dateKey(yesterday))) {
+            streakElement.textContent = "0 days";
+            return;
+        }
+
+        let streak = 0;
+        const currentDate = new Date(today);
+
+        if (!activityDates.has(dateKey(currentDate))) {
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        while (activityDates.has(dateKey(currentDate))) {
+            streak++;
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        streakElement.textContent = `${streak} ${streak === 1 ? "day" : "days"}`;
+
+    } catch (error) {
+        console.error("Dashboard streak error:", error);
+        streakElement.textContent = "—";
+    }
+}
+
+async function loadRecentMistakes() {
+    const list = document.getElementById("recentMistakesList");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load recent analyses");
+        }
+
+        const records = await response.json();
+
+        if (records.length === 0) {
+            list.innerHTML = "<p>No analyses yet. Start by analysing some code!</p>";
+            return;
+        }
+
+        list.innerHTML = records.slice(0, 4).map(record => {
+            const title = record.issue_title || record.issueTitle || "Code analysis";
+            const language = record.language || "Unknown language";
+            const category = record.category || "Other";
+
+            const tagClass = category.toLowerCase() + "-tag";
+
+            return `
+                <div class="mistake-row">
+                    <span class="mistake-symbol blue">!</span>
+                    <div class="mistake-details">
+                        <strong>${escapeHtml(title)}</strong>
+                        <span>${escapeHtml(language)} · ${escapeHtml(category)}</span>
+                    </div>
+                    <span class="category-tag ${tagClass}">
+                        ${escapeHtml(category)}
+                    </span>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Recent analyses error:", error);
+        list.innerHTML = "<p>Could not load recent analyses.</p>";
+    }
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+loadRecentMistakes();
+loadDashboardStreak();
+
+async function loadMistakeCategories() {
+    const chart = document.getElementById("mistakeCategoryChart");
+    const legend = document.getElementById("chartLegend");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analysis records");
+        }
+
+        const records = await response.json();
+
+    const categories = {
+    Logic: 0,
+    Syntax: 0,
+    Runtime: 0,
+    Input: 0,
+    Others: 0
+};
+
+        
+records.forEach(record => {
+    const category = String(record.category || "Others")
+        .trim()
+        .toLowerCase();
+
+    if (category === "logic") {
+        categories.Logic++;
+    } else if (category === "syntax") {
+        categories.Syntax++;
+    } else if (category === "runtime") {
+        categories.Runtime++;
+    } else if (category === "input") {
+        categories.Input++;
+    } else {
+        categories.Others++;
+    }
+});
+        const total = records.length;
+
+        
+const colours = {
+    Logic: "#7652df",
+    Syntax: "#a45de2",
+    Runtime: "#f4b740",
+    Input: "#f16f88",
+    Others: "#4cc2a0"
+};       
+const classes = {
+    Logic: "logic",
+    Syntax: "syntax",
+    Runtime: "runtime",
+    Input: "input",
+    Others: "other"
+};
+        let cumulative = 0;
+        const slices = [];
+
+        Object.entries(categories).forEach(([name, count]) => {
+            const percentage = total ? (count / total) * 100 : 0;
+            const start = cumulative;
+            cumulative += percentage;
+
+            slices.push(
+                `${colours[name]} ${start}% ${cumulative}%`
+            );
+
+            const row = [...legend.children].find(item =>
+                item.querySelector(".legend-dot")?.classList
+                    .contains(classes[name])
+            );
+
+            if (row) {
+                row.querySelector("strong").textContent =
+                    `${Math.round(percentage)}%`;
+            }
+        });
+
+        chart.style.background = total
+            ? `conic-gradient(${slices.join(", ")})`
+            : "#e5e7eb";
+
+        chart.setAttribute(
+            "aria-label",
+            "Mistake categories: " +
+            Object.entries(categories)
+                .map(([name, count]) =>
+                    `${name} ${total ? Math.round(count / total * 100) : 0} percent`
+                )
+                .join(", ")
+        );
+
+    } catch (error) {
+        console.error("Mistake categories error:", error);
+    }
+}
+loadMistakeCategories();
+
+async function loadAnalysesToday() {
+    const todayElement = document.getElementById("analysesToday");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analyses");
+        }
+
+        const records = await response.json();
+
+        const now = new Date();
+        const startOfToday = new Date(now);
+        startOfToday.setHours(0, 0, 0, 0);
+
+        const count = records.filter(record => {
+            const date = new Date(record.created_at || record.createdAt);
+
+            return !Number.isNaN(date.getTime())
+                && date >= startOfToday
+                && date <= now;
+        }).length;
+
+        todayElement.textContent = count;
+
+    } catch (error) {
+        console.error("Today's analyses error:", error);
+        todayElement.textContent = "—";
+    }
+}
+
+loadAnalysesToday();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor | DebugDairy</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* New Analysis page only */
+        .analysis-main {
+    flex: 1;
+    min-width: 0;
+    width: 0;
+    box-sizing: border-box;
+    margin-left: 0;
+    padding: 28px 32px;
+    background: #f4f7fc;
+    color: #102442;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-wrap: break-word;
+}
+        .analysis-heading {
+            margin: 0 0 8px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .analysis-subtitle {
+            margin: 0 0 26px;
+            color: #77859b;
+            font-size: 14px;
+        }
+
+        .analysis-card {
+            background: #ffffff;
+            border: 1px solid #e3eaf5;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(20, 45, 80, 0.04);
+        }
+
+        .analysis-field {
+            margin-bottom: 22px;
+        }
+
+        .analysis-field label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #263c59;
+        }
+
+        .analysis-select,
+        .analysis-error {
+            box-sizing: border-box;
+            width: 100%;
+            border: 1px solid #dce5f1;
+            border-radius: 7px;
+            padding: 13px 14px;
+            background: #fff;
+            color: #24364f;
+            font: inherit;
+            outline: none;
+        }
+
+        .analysis-select:focus,
+        .analysis-error:focus {
+            border-color: #6250e8;
+            box-shadow: 0 0 0 3px rgba(98, 80, 232, 0.12);
+        }
+
+        .analysis-code {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 220px;
+            resize: vertical;
+            padding: 18px;
+            border: 1px solid #203955;
+            border-radius: 8px;
+            background: #102033;
+            color: #e7efff;
+            font: 14px/1.8 Consolas, "Courier New", monospace;
+            tab-size: 4;
+            outline: none;
+        }
+
+        .analysis-code:focus {
+            border-color: #7969f5;
+            box-shadow: 0 0 0 3px rgba(98, 80, 232, 0.12);
+        }
+
+        .analysis-error {
+            min-height: 100px;
+            resize: vertical;
+            font-family: Consolas, "Courier New", monospace;
+        }
+
+        .analysis-button {
+            display: block;
+            width: 100%;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #5948e8;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .analysis-button:hover {
+            background: #4836d4;
+            transform: translateY(-1px);
+        }
+
+        .analysis-button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
+        .analysis-message {
+            display: none;
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #f0edff;
+            color: #4836b7;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .analysis-main {
+                padding: 20px 14px;
+            }
+
+            .analysis-card {
+                padding: 16px;
+            }
+
+            .analysis-heading {
+                font-size: 23px;
+            }
+
+            .analysis-code {
+                min-height: 190px;
+                font-size: 12px;
+            }
+        }
+        /* Fix sidebar and main content overlap */
+.app-layout {
+    display: flex;
+    align-items: stretch;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.app-layout > .sidebar {
+    position: relative;
+    flex: 0 0 240px;
+    width: 240px;
+    min-width: 240px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.app-layout > .analysis-main {
+    position: relative;
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.analysis-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.analysis-field,
+.analysis-select,
+.analysis-code,
+.analysis-error,
+.analysis-button {
+    box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .app-layout > .sidebar {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .app-layout > .analysis-main {
+        width: 100%;
+        flex: 1 1 auto;
+    }
+}
+
+/* Keep the student profile at the bottom of the sidebar */
+.app-layout > .sidebar {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding: 18px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e8eaff;
+    color: #263c75;
+    font-weight: 700;
+}
+
+.sidebar-profile strong,
+.sidebar-profile small {
+    display: block;
+}
+
+.sidebar-profile strong {
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.sidebar-profile small {
+    color: #d0daeb;
+    font-size: 12px;
+}
+  .monaco-editor-box {
+    width: 100%;
+    height: 400px;
+}
+
+.analysis-field {
+    margin-bottom: 20px;
+}
+
+.analysis-field label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.analysis-field select,
+.analysis-error {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #d9deeb;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.monaco-editor-box {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border: 1px solid #d9deeb;
+    border-radius: 8px;
+}
+
+#analyzeButton {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #5948e8;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+    </style>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="app-body">
+
+    <div class="app-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-icon">✳</span>
+                <span>DebugDairy</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="nav-link" href="dashboard.html">
+                    <span>▦</span> Dashboard
+                </a>
+
+                <a class="nav-link active" href="new-analysis.html">
+                    <span>⌘</span> New Analysis
+                </a>
+
+                <a class="nav-link" href="my-learning.html">
+                    <span>▤</span> My Learning
+                </a>
+
+
+                <a class="nav-link" href="analytics.html">
+                    <span>▥</span> Analytics
+                </a>
+
+                <a class="nav-link" href="recurring-mistakes.html">
+                    <span>↻</span> Recurring Mistakes
+                </a>
+
+                <a class="nav-link" href="practice.html">
+                    <span>◎</span> Practice
+                </a>
+            </nav>
+<div class="sidebar-profile">
+    <div class="profile-avatar">S</div>
+    <div>
+        <strong>Student</strong>
+        <small>Keep learning!</small>
+    </div>
+</div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="analysis-main">
+
+            <h1 class="analysis-heading">Code Editor</h1>
+
+            <p class="analysis-subtitle">
+                Enter your code and error message to get instant analysis.
+            </p>
+
+            <section class="analysis-card">
+
+                <form id="analysisForm">
+
+                    <!-- Programming language -->
+                    
+<div class="analysis-field">
+    <label for="language">Programming Language</label>
+    <select id="language">
+        <option value="java">Java</option>
+        <option value="python">Python</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="javascript">JavaScript</option>
+    </select>
+</div>
+
+<div class="analysis-field">
+    <label for="codeEditor">Code</label>
+    <div id="codeEditor" class="monaco-editor-box"></div>
+</div>
+<button type="submit" id="analyzeButton">
+    Analyze Code
+</button>
+<div id="analysisMessage"
+     class="analysis-message"
+     role="status"
+     aria-live="polite"></div>
+                </form>
+
+            </section>
+
+        </main>
+    </div>
+
+ 
+<!-- Monaco loader must come first -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+
+
+<script>
+    const analysisForm = document.getElementById("analysisForm");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const analysisMessage = document.getElementById("analysisMessage");
+    const languageSelect = document.getElementById("language");
+
+    let editor = null;
+
+    // Load Monaco Editor
+    require.config({
+        paths: {
+            vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"
+        }
+    });
+
+    require(["vs/editor/editor.main"], function () {
+        editor = monaco.editor.create(
+            document.getElementById("codeEditor"),
+            {
+                value: [
+                    "public class Main {",
+                    "    public static void main(String[] args) {",
+                    "        // Write your code here",
+                    "",
+                    "    }",
+                    "}"
+                ].join("\n"),
+                language: "java",
+                theme: "vs-dark",
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                wordWrap: "on",
+                scrollBeyondLastLine: false
+            }
+        );
+
+        languageSelect.addEventListener("change", function () {
+            monaco.editor.setModelLanguage(
+                editor.getModel(),
+                this.value
+            );
+        });
+    });
+
+  
+    // Handle Analyze Code button
+    analysisForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!editor) {
+            alert("Code editor is still loading. Please wait.");
+            return;
+        }
+
+        const code = editor.getValue().trim();
+        const language = languageSelect.value;
+
+        if (!code) {
+            alert("Please enter your code before analyzing.");
+            return;
+        }
+
+        analyzeButton.disabled = true;
+        analyzeButton.textContent = "Analyzing...";
+        analysisMessage.textContent = "Analyzing your code. Please wait...";
+
+        try {
+            const response = await fetch(
+                "http://localhost:8081/api/analysis",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        language: language
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(
+                    `Analysis failed (${response.status}): ${errorText}`
+                );
+            }
+
+            const result = await response.json();
+
+            // Save the actual backend response for the result page.
+            sessionStorage.setItem(
+                "debugDairyAnalysis",
+                JSON.stringify(result)
+            );
+
+            sessionStorage.setItem("debugDairyCode", code);
+            sessionStorage.setItem("debugDairyLanguage", language);
+
+            window.location.href = "analysis-result.html";
+
+        } catch (error) {
+            console.error("Analysis error:", error);
+            analysisMessage.textContent =
+                "Unable to analyze your code. Check that the backend is running and try again.";
+            alert(analysisMessage.textContent);
+
+        } finally {
+            analyzeButton.disabled = false;
+            analyzeButton.textContent = "Analyze Code";
+        }
+    });
+
+</script>
+</body>
+</html>

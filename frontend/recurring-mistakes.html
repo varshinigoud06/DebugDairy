@@ -1,0 +1,1295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurring Mistakes | DebugDairy</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body.app-body {
+            margin: 0;
+            background: #f4f7fc;
+            color: #172b49;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .app-layout {
+            display: flex;
+            align-items: stretch;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: relative;
+            flex: 0 0 238px;
+            width: 238px;
+            min-width: 238px;
+            min-height: 100vh;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 1;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+            padding: 18px 10px 12px;
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255,255,255,.15);
+        }
+
+        .sidebar-profile .profile-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 50%;
+            background: #e9eaff;
+            color: #5142d9;
+            font-weight: 700;
+        }
+
+        .sidebar-profile > div:last-child {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+
+        .sidebar-profile strong {
+            color: white;
+            font-size: 13px;
+        }
+
+        .sidebar-profile small {
+            color: #c4d3ec;
+            font-size: 11px;
+        }
+
+        /* MAIN */
+        .recurring-main {
+            flex: 1 1 0;
+            width: 0;
+            min-width: 0;
+            padding: 30px;
+            background: #f4f7fc;
+        }
+
+        .recurring-main * {
+            box-sizing: border-box;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            color: #172b49;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #78869c;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 9px;
+            background: #5948e8;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .primary-btn:hover {
+            background: #4937d1;
+            transform: translateY(-2px);
+        }
+
+        /* TOP SUMMARY CARDS */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid #e2eaf5;
+            border-radius: 13px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(32,57,95,.04);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(32,57,95,.08);
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 12px;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .summary-card:nth-child(1) {
+            background: linear-gradient(135deg, #fff5e8, #fff);
+            border-top: 3px solid #f2a644;
+        }
+
+        .summary-card:nth-child(1) .summary-icon {
+            color: #b87514;
+            background: #ffebc9;
+        }
+
+        .summary-card:nth-child(2) {
+            background: linear-gradient(135deg, #f0edff, #fff);
+            border-top: 3px solid #7564ef;
+        }
+
+        .summary-card:nth-child(2) .summary-icon {
+            color: #5948e8;
+            background: #e9e5ff;
+        }
+
+        .summary-card:nth-child(3) {
+            background: linear-gradient(135deg, #e9fbf3, #fff);
+            border-top: 3px solid #36b894;
+        }
+
+        .summary-card:nth-child(3) .summary-icon {
+            color: #198a69;
+            background: #d5f6e7;
+        }
+
+        .summary-info {
+            min-width: 0;
+        }
+
+        .summary-info span {
+            display: block;
+            margin-bottom: 7px;
+            color: #78869c;
+            font-size: 12px;
+        }
+
+        .summary-info strong {
+            display: block;
+            color: #192f50;
+            font-size: 25px;
+        }
+
+        .summary-info small {
+            display: block;
+            margin-top: 5px;
+            color: #71829a;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* RECURRING ALERT */
+        .pattern-card {
+            margin-bottom: 22px;
+            padding: 23px;
+            border: 1px solid #f5dfbd;
+            border-radius: 14px;
+            background: linear-gradient(120deg, #fff8ec, #fffdf9);
+            box-shadow: 0 4px 15px rgba(130,90,25,.04);
+        }
+
+        .pattern-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .warning-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+            border-radius: 12px;
+            background: #ffebc9;
+            color: #c47a15;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .pattern-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .pattern-content h2 {
+            margin: 2px 0 10px;
+            color: #9b5a12;
+            font-size: 19px;
+        }
+
+        .pattern-content > p {
+            margin: 0 0 16px;
+            color: #725f48;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .pattern-content strong {
+            color: #9b5a12;
+        }
+
+        .recommendation-label {
+            margin-bottom: 8px;
+            color: #198a69;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .recommendation-path {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 17px;
+            padding: 9px 12px;
+            border: 1px solid #c6efdf;
+            border-radius: 8px;
+            background: #e8fbf3;
+            color: #167957;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .recommendation-path span {
+            color: #54a68b;
+        }
+
+        /* GENERAL PANELS */
+        .content-panel {
+            margin-bottom: 22px;
+            padding: 23px;
+            border: 1px solid #e2eaf5;
+            border-radius: 13px;
+            background: white;
+            box-shadow: 0 4px 16px rgba(32,57,95,.035);
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 7px;
+        }
+
+        .panel-heading h2 {
+            margin: 0;
+            color: #172b49;
+            font-size: 19px;
+        }
+
+        .panel-description {
+            margin: 0 0 21px;
+            color: #78869c;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .period-label {
+            padding: 7px 10px;
+            border-radius: 7px;
+            background: #f0edff;
+            color: #5948e8;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* SEARCH */
+        .mistake-search {
+            width: 100%;
+            margin-bottom: 17px;
+            padding: 12px 14px;
+            border: 1px solid #dce5f1;
+            border-radius: 9px;
+            outline: none;
+            color: #253b59;
+            font-size: 13px;
+        }
+
+        .mistake-search:focus {
+            border-color: #7564ef;
+            box-shadow: 0 0 0 3px rgba(89,72,232,.1);
+        }
+
+        /* MISTAKE LIST */
+        .mistake-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .mistake-item {
+            display: grid;
+            grid-template-columns: 43px minmax(0,1fr) auto;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border: 1px solid #e4eaf4;
+            border-radius: 11px;
+            background: #fff;
+            transition: .2s ease;
+        }
+
+        .mistake-item:hover {
+            border-color: #cec7ff;
+            box-shadow: 0 5px 16px rgba(32,57,95,.05);
+            transform: translateY(-1px);
+        }
+
+        .mistake-symbol {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .symbol-red {
+            background: #fff0f2;
+            color: #d84d69;
+        }
+
+        .symbol-orange {
+            background: #fff0df;
+            color: #dc861b;
+        }
+
+        .symbol-yellow {
+            background: #fff8d9;
+            color: #bc940e;
+        }
+
+        .symbol-green {
+            background: #e4f8ed;
+            color: #279969;
+        }
+
+        .mistake-details {
+            min-width: 0;
+        }
+
+        .mistake-details h3 {
+            margin: 0 0 8px;
+            color: #263c59;
+            font-size: 14px;
+        }
+
+        .mistake-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            color: #78869c;
+            font-size: 11px;
+        }
+
+        .category-tag {
+            padding: 4px 8px;
+            border-radius: 5px;
+            background: #f0edff;
+            color: #5948e8;
+            font-weight: 600;
+        }
+
+        .mistake-count {
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .mistake-count strong {
+            display: block;
+            color: #263c59;
+            font-size: 18px;
+        }
+
+        .mistake-count span {
+            display: block;
+            margin-top: 4px;
+            color: #8995a8;
+            font-size: 11px;
+        }
+
+        .empty-state {
+            display: none;
+            padding: 28px 12px;
+            text-align: center;
+            color: #78869c;
+            font-size: 13px;
+        }
+
+        /* FOOTER NOTE */
+        .demo-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            border: 1px solid #e0e5ff;
+            border-radius: 10px;
+            background: linear-gradient(120deg, #f0efff, #f5f8ff);
+            color: #53648b;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .demo-note strong {
+            color: #5948e8;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1100px) {
+            .recurring-main {
+                padding: 24px 20px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .summary-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card:last-child {
+                grid-column: auto;
+            }
+
+            .content-panel,
+            .pattern-card {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+                height: auto;
+            }
+
+            .sidebar-profile {
+                margin-top: 14px;
+            }
+
+            .recurring-main {
+                width: 100%;
+                padding: 18px 14px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .mistake-item {
+                grid-template-columns: 40px minmax(0,1fr);
+                gap: 11px;
+            }
+
+            .mistake-count {
+                grid-column: 2;
+                text-align: left;
+                display: flex;
+                align-items: baseline;
+                gap: 6px;
+            }
+
+            .mistake-count span {
+                margin-top: 0;
+            }
+
+            .pattern-heading {
+                gap: 10px;
+            }
+        }
+
+/* Recurring mistakes: styling for dynamically generated cards */
+.mistake-item {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 16px;
+    margin-bottom: 12px;
+    min-height: 84px;
+    background: #ffffff;
+    border: 1px solid #dfe7f5;
+    border-radius: 13px;
+    box-sizing: border-box;
+}
+
+.mistake-item:hover {
+    border-color: #c9baff;
+    box-shadow: 0 5px 16px rgba(48, 43, 100, 0.06);
+}
+
+.mistake-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #fff0f2;
+    color: #e34b65;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mistake-info {
+    min-width: 0;
+}
+
+.mistake-info h3 {
+    margin: 0 0 9px;
+    color: #172d4c;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.mistake-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 8px;
+    color: #7485a2;
+    font-size: 11px;
+}
+
+.mistake-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: #f0edff;
+    color: #6650d9;
+    font-size: 10px;
+}
+
+.mistake-info p {
+    margin: 0;
+    color: #70819d;
+    font-size: 11px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.mistake-count {
+    min-width: 105px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mistake-count strong {
+    color: #172d4c;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mistake-count span {
+    color: #8290a8;
+    font-size: 11px;
+}
+
+@media (max-width: 700px) {
+    .mistake-item {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .mistake-count {
+        grid-column: 2;
+        min-width: 0;
+        text-align: left;
+    }
+}
+    </style>
+</head>
+
+<body class="app-body">
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <span class="brand-icon">✳</span>
+            <span>DebugDairy</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="dashboard.html">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a class="nav-link" href="new-analysis.html">
+                <span>⌘</span> New Analysis
+            </a>
+
+            <a class="nav-link" href="my-learning.html">
+                <span>▤</span> My Learning
+            </a>
+
+            <a class="nav-link" href="analytics.html">
+                <span>▥</span> Analytics
+            </a>
+
+            <a class="nav-link active" href="recurring-mistakes.html">
+                <span>↻</span> Recurring Mistakes
+            </a>
+
+            <a class="nav-link" href="practice.html">
+                <span>◎</span> Practice
+            </a>
+        </nav>
+
+        <div class="sidebar-profile">
+            <div class="profile-avatar">S</div>
+            <div>
+                <strong>Student</strong>
+                <small>Keep learning!</small>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="recurring-main">
+
+        <header class="page-header">
+            <div>
+                <h1>Recurring Mistake Detection</h1>
+                <p>
+                    Identify repeated coding mistakes and focus on the
+                    concepts you need to revise.
+                </p>
+            </div>
+
+            <a href="my-learning.html" class="primary-btn">
+                View My Learning
+            </a>
+        </header>
+
+        
+<!-- SUMMARY CARDS -->
+<section class="summary-grid">
+
+    <article class="summary-card">
+        <div class="summary-icon">!</div>
+        <div class="summary-info">
+            <span>Repeated Mistakes</span>
+            <strong id="totalRepeats">0</strong>
+            <small>Actual mistake records</small>
+        </div>
+    </article>
+
+    <article class="summary-card">
+        <div class="summary-icon">↻</div>
+        <div class="summary-info">
+            <span>Recurring Patterns</span>
+            <strong id="patternCount">0</strong>
+            <small>Distinct mistake types found more than once</small>
+        </div>
+    </article>
+    <article class="summary-card">
+        <div class="summary-icon">✓</div>
+        <div class="summary-info">
+            <span>Top Priority</span>
+            <strong id="topPriority" style="font-size:19px;">None yet</strong>
+            <small>Most frequently repeated mistake</small>
+        </div>
+    </article>
+</section>
+        
+<!-- RECURRING PATTERN ALERT -->
+<section class="pattern-card" id="patternAlert">
+
+    <div class="pattern-heading">
+        <div class="warning-icon">!</div>
+
+        <div class="pattern-content">
+            <h2 id="alertTitle">Loading recurring patterns...</h2>
+
+            <p id="alertDescription">
+                Checking your saved analyses for repeated mistakes.
+            </p>
+
+            <div class="recommendation-label">Recommended Revision</div>
+
+            <div class="recommendation-path" id="recommendationPath">
+                Loading recommendation...
+            </div>
+
+            <div>
+                <a href="practice.html" class="primary-btn">
+                    Go to Practice →
+                </a>
+            </div>
+        </div>
+    </div>
+
+</section>
+        <!-- TOP RECURRING MISTAKES -->
+        <section class="content-panel">
+
+            <div class="panel-heading">
+                <h2>Your Top Recurring Mistakes</h2>
+                <span class="period-label">Last 30 Days</span>
+            </div>
+
+            <p class="panel-description">
+                Find your most repeated mistakes and identify which
+                programming concepts need more practice.
+            </p>
+
+            <input
+                type="search"
+                class="mistake-search"
+                id="mistakeSearch"
+                placeholder="Search recurring mistakes..."
+                aria-label="Search recurring mistakes"
+            >
+
+            <div class="mistake-list" id="mistakeList">
+
+                <!-- ARRAY BOUNDARY -->
+                <article class="mistake-item"
+                    data-search="array boundary error logic arrays loops java">
+
+                    <div class="mistake-symbol symbol-red">A</div>
+
+                    <div class="mistake-details">
+                        <h3>Array Boundary Error</h3>
+                        <div class="mistake-meta">
+                            <span class="category-tag">Logic</span>
+                            <span>Java · Arrays &amp; Loops</span>
+                        </div>
+                    </div>
+
+                    <div class="mistake-count">
+                        <strong>4 times</strong>
+                        <span>Most repeated</span>
+                    </div>
+
+                </article>
+
+                <!-- MISSING SEMICOLON -->
+                <article class="mistake-item"
+                    data-search="missing semicolon syntax java statements">
+
+                    <div class="mistake-symbol symbol-orange">;</div>
+
+                    <div class="mistake-details">
+                        <h3>Missing Semicolon</h3>
+                        <div class="mistake-meta">
+                            <span class="category-tag">Syntax</span>
+                            <span>Java · Statements</span>
+                        </div>
+                    </div>
+
+                    <div class="mistake-count">
+                        <strong>3 times</strong>
+                        <span>Needs revision</span>
+                    </div>
+
+                </article>
+
+                <!-- INPUT FORMAT -->
+                <article class="mistake-item"
+                    data-search="input format error scanner input handling java">
+
+                    <div class="mistake-symbol symbol-yellow">I</div>
+
+                    <div class="mistake-details">
+                        <h3>Input Format Error</h3>
+                        <div class="mistake-meta">
+                            <span class="category-tag">Input Handling</span>
+                            <span>Java · Scanner</span>
+                        </div>
+                    </div>
+
+                    <div class="mistake-count">
+                        <strong>2 times</strong>
+                        <span>Review inputs</span>
+                    </div>
+
+                </article>
+
+                <!-- NULL POINTER -->
+                <article class="mistake-item"
+                    data-search="null pointer exception concept objects java oop">
+
+                    <div class="mistake-symbol symbol-green">N</div>
+
+                    <div class="mistake-details">
+                        <h3>Null Pointer Exception</h3>
+                        <div class="mistake-meta">
+                            <span class="category-tag">Concept</span>
+                            <span>Java · OOP</span>
+                        </div>
+                    </div>
+
+                    <div class="mistake-count">
+                        <strong>1 time</strong>
+                        <span>Keep practising</span>
+                    </div>
+
+                </article>
+
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                No matching mistakes found. Try another keyword.
+            </div>
+
+        </section>
+
+       
+<!-- INFORMATION NOTE -->
+<div class="demo-note">
+    <span aria-hidden="true">i</span>
+    <div>
+        <strong>Live data:</strong>
+        Recurring patterns are calculated from your saved analysis records.
+        Counts reflect the analyses currently stored in your database.
+    </div>
+</div>
+    </main>
+</div>
+
+
+<script>
+    const API_URL = "http://localhost:8081/api/analysis";
+
+    const mistakeSearch = document.getElementById("mistakeSearch");
+    const mistakeList = document.querySelector(".mistake-list") ||
+                        document.querySelector(".mistakes-list") ||
+                        document.querySelector(".recurring-list");
+    const emptyState = document.getElementById("emptyState");
+
+    let recurringPatterns = [];
+
+    function getField(record, ...keys) {
+        for (const key of keys) {
+            if (record[key] !== null && record[key] !== undefined &&
+                String(record[key]).trim() !== "") {
+                return record[key];
+            }
+        }
+        return "";
+    }
+
+    function normalizeLanguage(language) {
+        const value = String(language || "Unknown").trim().toLowerCase();
+        if (value === "c++") return "cpp";
+        return value;
+    }
+
+    function getPattern(record) {
+        const title = String(
+            getField(record, "issue_title", "issueTitle") || "Unspecified issue"
+        );
+        const category = String(record.category || "Other");
+        const concept = String(
+            getField(record, "concept_to_revise", "conceptToRevise") || ""
+        );
+        const description = String(
+            getField(record, "explanation", "what_went_wrong", "whatWentWrong") || ""
+        );
+
+        const text = (title + " " + concept + " " + description).toLowerCase();
+
+        let key;
+        let label;
+        let topic;
+
+        if (/division by zero|divide by zero/.test(text)) {
+            key = "division-zero";
+            label = "Division by Zero";
+            topic = "Division and exception handling";
+        } else if (/arrayindexoutofbounds|array index out of bounds|array boundary/.test(text)) {
+            key = "array-bounds";
+            label = "Array Index Out of Bounds";
+            topic = "Array indexing and loop boundaries";
+        } else if (/stringindexoutofbounds|string index out of bounds|charat/.test(text)) {
+            key = "string-bounds";
+            label = "String Index Out of Bounds";
+            topic = "String indexing and bounds checking";
+        } else if (/missing semicolon|semicolon/.test(text)) {
+            key = "semicolon";
+            label = "Missing Semicolon";
+            topic = "Syntax and statement termination";
+        } else if (/undefined variable|referenceerror|nameerror|case mismatch/.test(text)) {
+            key = "undefined-variable";
+            label = "Undefined Variable";
+            topic = "Variable naming and references";
+        } else if (/null pointer|nullpointerexception/.test(text)) {
+            key = "null-pointer";
+            label = "Null Pointer Exception";
+            topic = "Null values and object references";
+        } else if (/sizee|incorrect method name|non-existent method/.test(text)) {
+            key = "method-name";
+            label = "Incorrect Method Name";
+            topic = "Method names and API usage";
+        } else if (/type mismatch|assigning string to int/.test(text)) {
+            key = "type-mismatch";
+            label = "Type Mismatch";
+            topic = "Data types and type conversion";
+        } else if (/input|scanner|format specifier/.test(text)) {
+            key = "input-format";
+            label = "Input Format Error";
+            topic = "Input handling and formatting";
+        } else {
+            key = "other:" + (title + "|" + category).toLowerCase();
+            label = title;
+            topic = concept || category + " review";
+        }
+
+        return {
+            key,
+            label,
+            topic,
+            category,
+            language: normalizeLanguage(record.language),
+            id: record.id,
+            date: getField(record, "created_at", "createdAt"),
+            description: description || "No explanation saved."
+        };
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function labelForLanguage(language) {
+        const labels = {
+            java: "Java",
+            python: "Python",
+            javascript: "JavaScript",
+            cpp: "C++",
+            c: "C"
+        };
+        return labels[language] ||
+            language.charAt(0).toUpperCase() + language.slice(1);
+    }
+
+function updateSummary(records, patterns) {
+    const repeatedCount = records.filter(record => {
+        const title = String(
+            getField(record, "issue_title", "issueTitle")
+        ).toLowerCase();
+
+        return title &&
+            !/no issues found|no issue detected|no errors found|no error detected/.test(title);
+    }).length;
+
+    const repeatedPatterns = patterns.filter(pattern => pattern.count > 1);
+
+    document.getElementById("totalRepeats").textContent = repeatedCount;
+
+    document.getElementById("patternCount").textContent =
+        repeatedPatterns.length;
+
+    const topPriority = document.getElementById("topPriority");
+
+    if (topPriority) {
+        topPriority.textContent = repeatedPatterns.length > 0
+            ? repeatedPatterns[0].label
+            : "None yet";
+    }
+    
+    const alertTitle = document.getElementById("alertTitle");
+    const alertDescription = document.getElementById("alertDescription");
+    const recommendationPath = document.getElementById("recommendationPath");
+
+    if (repeatedPatterns.length > 0) {
+        const top = repeatedPatterns[0];
+
+        alertTitle.textContent = "Recurring Pattern Detected";
+
+        alertDescription.textContent =
+            "You have encountered " + top.count + " instances of " +
+            top.label + " across your saved analyses. Review the related " +
+            "concept to help avoid repeating this mistake.";
+
+        recommendationPath.textContent = top.topic;
+    } else {
+        alertTitle.textContent = "No Recurring Patterns Yet";
+
+        alertDescription.textContent =
+            "No mistake type has appeared more than once in your saved analyses.";
+
+        recommendationPath.textContent =
+            "Keep practising and reviewing your analyses";
+    }
+}
+    function renderPatterns(patterns) {
+        if (!mistakeList) {
+            console.error(
+                "Could not find the recurring mistakes list container. " +
+                "Please check its HTML class before changing the page."
+            );
+            if (emptyState) {
+                emptyState.style.display = "block";
+                emptyState.textContent =
+                    "The mistakes list container could not be found.";
+            }
+            return;
+        }
+
+        mistakeList.innerHTML = "";
+
+        if (patterns.length === 0) {
+            if (emptyState) {
+                emptyState.style.display = "block";
+                emptyState.textContent =
+                    "No recurring mistakes found in your saved analyses yet.";
+            }
+            return;
+        }
+
+        patterns.forEach(pattern => {
+            const item = document.createElement("div");
+            item.className = "mistake-item";
+            item.dataset.search = [
+                pattern.label,
+                pattern.category,
+                pattern.topic,
+                pattern.language,
+                pattern.description
+            ].join(" ");
+
+            const countLabel = pattern.count === 1
+                ? "1 time" : pattern.count + " times";
+
+            item.innerHTML = `
+                <div class="mistake-icon" aria-hidden="true">
+                    ${escapeHtml(pattern.label.charAt(0).toUpperCase())}
+                </div>
+                <div class="mistake-info">
+                    <h3>${escapeHtml(pattern.label)}</h3>
+                    <div class="mistake-meta">
+                        <span class="mistake-tag">
+                            ${escapeHtml(pattern.category)}
+                        </span>
+                        <span>${escapeHtml(
+                            pattern.languages.map(labelForLanguage).join(", ")
+                        )}</span>
+                        <span>· ${escapeHtml(pattern.topic)}</span>
+                    </div>
+                    <p>${escapeHtml(pattern.description)}</p>
+                </div>
+                <div class="mistake-count">
+                    <strong>${countLabel}</strong>
+                    <span>${pattern.count > 1 ? "Repeated pattern" : "Seen once"}</span>
+                </div>
+            `;
+
+            mistakeList.appendChild(item);
+        });
+
+        filterMistakes();
+    }
+
+    function filterMistakes() {
+        if (!mistakeSearch || !mistakeList) return;
+
+        const query = mistakeSearch.value.trim().toLowerCase();
+        const items = Array.from(
+            mistakeList.querySelectorAll(".mistake-item")
+        );
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const searchableText = (
+                (item.dataset.search || "") + " " + item.textContent
+            ).toLowerCase();
+
+            const matches = searchableText.includes(query);
+            item.style.display = matches ? "grid" : "none";
+
+            if (matches) visibleCount++;
+        });
+
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? "block" : "none";
+            if (visibleCount === 0 && recurringPatterns.length > 0) {
+                emptyState.textContent =
+                    "No matching mistakes found. Try another search.";
+            }
+        }
+    }
+
+    async function loadRecurringMistakes() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error("API returned status " + response.status);
+            }
+
+            const records = await response.json();
+            if (!Array.isArray(records)) {
+                throw new Error("The analysis API did not return a list.");
+            }
+
+            const grouped = new Map();
+
+            records.forEach(record => {
+                const pattern = getPattern(record);
+
+if (
+    /no issues found|no issue detected|no errors found|no error detected/i
+        .test(pattern.label)
+) {
+    return;
+}
+
+                if (!grouped.has(pattern.key)) {
+                    grouped.set(pattern.key, {
+                        ...pattern,
+                        count: 0,
+                        languages: [],
+                        descriptions: []
+                    });
+                }
+
+                const existing = grouped.get(pattern.key);
+                existing.count++;
+
+                if (!existing.languages.includes(pattern.language)) {
+                    existing.languages.push(pattern.language);
+                }
+
+                if (pattern.description &&
+                    !existing.descriptions.includes(pattern.description)) {
+                    existing.descriptions.push(pattern.description);
+                }
+            });
+
+            recurringPatterns = Array.from(grouped.values())
+                .map(pattern => ({
+                    ...pattern,
+                    description: pattern.descriptions[0] || pattern.description
+                }))
+                .sort((a, b) => b.count - a.count);
+
+            updateSummary(records, recurringPatterns);
+            renderPatterns(recurringPatterns);
+
+            const notice = document.querySelector(".demo-notice");
+            if (notice) {
+                notice.textContent =
+                    "Live data: recurring patterns are calculated from your saved analysis records.";
+            }
+
+            const noticeText = Array.from(document.querySelectorAll("p, div"))
+                .find(element =>
+                    element.children.length === 0 &&
+                    element.textContent.includes(
+                        "Actual recurring patterns will need to be calculated"
+                    )
+                );
+
+            if (noticeText) {
+                noticeText.textContent =
+                    "Recurring patterns are calculated from your saved analysis records.";
+            }
+        } catch (error) {
+            console.error("Could not load recurring mistakes:", error);
+
+            if (emptyState) {
+                emptyState.style.display = "block";
+                emptyState.textContent =
+                    "Could not load saved analyses. Make sure the backend is running on port 8081, then refresh this page.";
+            }
+        }
+    }
+
+    if (mistakeSearch) {
+        mistakeSearch.addEventListener("input", filterMistakes);
+    }
+
+    loadRecurringMistakes();
+</script>
+</body>
+</html>

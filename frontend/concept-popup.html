@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept Guide | DebugDairy</title>
+
+<style>
+:root {
+    --navy:#132744;
+    --purple:#6952df;
+    --purple-dark:#5540c4;
+    --purple-light:#f0edff;
+    --text:#263a57;
+    --muted:#7889a1;
+    --border:#e4eaf3;
+    --bg:#f4f7fc;
+    --green:#159768;
+    --red:#d95767;
+    --orange:#df9630;
+    --blue:#4381cf;
+}
+* { box-sizing:border-box; }
+body {
+    margin:0;
+    font-family:Inter,Arial,Helvetica,sans-serif;
+    color:var(--text);
+    background:var(--bg);
+}
+button,input,select { font:inherit; }
+button,a,select { -webkit-tap-highlight-color:transparent; }
+button { cursor:pointer; }
+a { color:inherit; }
+.page { width:100%; padding:22px 26px 35px; }
+.topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; margin-bottom:23px;
+}
+.brand {
+    display:flex; align-items:center; gap:9px;
+    font-size:19px; font-weight:850; color:var(--navy);
+}
+.brand-mark {
+    display:grid; place-items:center; width:30px; height:30px;
+    color:white; background:var(--purple); border-radius:9px;
+}
+.brand-mark svg { width:19px; height:19px; }
+.top-actions { display:flex; align-items:center; gap:9px; }
+.btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:7px; border:1px solid var(--border); border-radius:9px;
+    padding:10px 13px; background:white; color:#596b84;
+    text-decoration:none; font-size:12px; font-weight:750;
+    transition:.18s ease;
+}
+.btn:hover { border-color:#b9adff; color:var(--purple); }
+.btn-primary { color:white; background:var(--purple); border-color:var(--purple); }
+.btn-primary:hover { background:var(--purple-dark); color:white; }
+.btn svg { width:15px; height:15px; }
+
+.heading-row {
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:18px; margin-bottom:21px;
+}
+.eyebrow {
+    color:var(--purple); font-size:10px; font-weight:850;
+    letter-spacing:1.3px; text-transform:uppercase;
+}
+h1 { color:var(--navy); font-size:30px; line-height:1.2; margin:8px 0; }
+.subtitle { font-size:13px; color:var(--muted); line-height:1.7; margin:0; }
+.heading-pills { display:flex; gap:7px; flex-wrap:wrap; margin-top:13px; }
+.pill {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:6px 9px; border-radius:7px;
+    background:var(--purple-light); color:var(--purple);
+    font-size:10px; font-weight:800;
+}
+.pill.green { background:#e1f8eb; color:#168458; }
+.pill.blue { background:#e6f1ff; color:#3974bd; }
+.pill.orange { background:#fff1d9; color:#a86d13; }
+
+.selector-wrap { min-width:205px; }
+.selector-wrap label {
+    display:block; margin-bottom:6px; font-size:10px;
+    color:var(--muted); font-weight:800;
+}
+select {
+    width:100%; min-width:0; border:1px solid var(--border);
+    background:white; color:var(--text); border-radius:9px;
+    padding:11px 12px; outline:none; font-size:12px;
+}
+select:focus,input:focus { border-color:#a89aff; box-shadow:0 0 0 3px #f0edff; }
+
+.layout {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 280px;
+    gap:20px; align-items:start;
+}
+.main-column,.side-column { display:flex; flex-direction:column; gap:17px; min-width:0; }
+.card {
+    background:white; border:1px solid var(--border);
+    border-radius:13px; padding:21px; min-width:0;
+    box-shadow:0 3px 13px rgba(26,47,79,.035);
+}
+.card-head {
+    display:flex; align-items:flex-start; gap:12px; margin-bottom:15px;
+}
+.section-icon {
+    display:grid; place-items:center; flex-shrink:0;
+    width:37px; height:37px; border-radius:11px;
+    background:var(--purple-light); color:var(--purple);
+}
+.section-icon svg { width:19px; height:19px; }
+.section-label {
+    color:var(--purple); font-size:9px; font-weight:850;
+    letter-spacing:1.1px; text-transform:uppercase; margin-bottom:5px;
+}
+h2 { color:var(--navy); font-size:16px; margin:0; line-height:1.4; }
+h3 { color:var(--navy); font-size:13px; margin:0 0 7px; }
+p { font-size:12px; line-height:1.8; color:#697a91; margin:0 0 10px; }
+p:last-child { margin-bottom:0; }
+.definition {
+    padding:16px; border-radius:10px;
+    background:linear-gradient(110deg,#f2efff,#faf9ff);
+    border-left:4px solid var(--purple);
+}
+.definition p { color:#514c76; font-size:13px; }
+.subsection { margin-top:17px; }
+.subsection-title { font-size:12px; font-weight:850; color:var(--navy); margin-bottom:7px; }
+
+.diagram {
+    padding:17px; border:1px solid var(--border);
+    border-radius:11px; background:#fbfcff;
+}
+.diagram-top {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; margin-bottom:15px;
+}
+.diagram-top strong { font-size:12px; color:var(--navy); }
+.diagram-top span { font-size:10px; color:var(--muted); }
+.visual-grid {
+    display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px;
+}
+.visual-cell {
+    min-width:0; min-height:61px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:5px;
+    border:1px solid #cdebd9; background:#e6f8ed;
+    border-radius:9px; text-align:center; padding:7px 4px;
+}
+.visual-cell strong { color:#21784e; font-size:13px; overflow-wrap:anywhere; }
+.visual-cell small { color:#6e8d7b; font-size:9px; }
+.visual-cell:nth-child(3n+2) { background:#edf3ff; border-color:#d4e3ff; }
+.visual-cell:nth-child(3n+2) strong { color:#3c70b1; }
+.visual-cell:nth-child(3n) { background:#f3efff; border-color:#e0d8ff; }
+.visual-cell:nth-child(3n) strong { color:#6952c4; }
+.visual-cell.highlight { background:#fff1dc; border-color:#f2d4a0; }
+.visual-cell.highlight strong { color:#a96d15; }
+.diagram-caption {
+    margin-top:13px; padding:11px 12px; background:white;
+    border:1px solid var(--border); border-radius:8px;
+    color:#687991; font-size:11px; line-height:1.7;
+}
+.diagram-caption strong { color:var(--navy); }
+.diagram-legend { display:flex; gap:13px; flex-wrap:wrap; margin-top:12px; }
+.legend-item { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:10px; }
+.legend-dot { width:8px; height:8px; border-radius:3px; background:#b8e8cb; }
+.legend-dot.blue { background:#cddfff; }
+.legend-dot.orange { background:#f2d4a0; }
+
+.step-list { display:flex; flex-direction:column; gap:10px; }
+.step {
+    display:flex; gap:12px; align-items:flex-start;
+    padding:13px; border:1px solid #eaf0f7; border-radius:10px;
+    background:#fff;
+}
+.step-number {
+    display:grid; place-items:center; flex-shrink:0;
+    width:29px; height:29px; border-radius:9px;
+    color:var(--purple); background:var(--purple-light);
+    font-size:12px; font-weight:850;
+}
+.step p { margin:0; }
+
+.code-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.code-panel { min-width:0; overflow:hidden; border:1px solid var(--border); border-radius:10px; }
+.code-heading {
+    display:flex; align-items:center; gap:7px; padding:11px 13px;
+    font-size:11px; font-weight:850; background:#f8f9fc;
+    border-bottom:1px solid var(--border);
+}
+.code-heading svg { width:15px; height:15px; }
+.code-heading.bad { color:var(--red); }
+.code-heading.good { color:var(--green); }
+pre {
+    margin:0; padding:16px; min-height:125px;
+    overflow:auto; background:#142139; color:#e5ebf5;
+    font:12px/1.85 Consolas,Monaco,monospace;
+    tab-size:4; white-space:pre;
+}
+.code-note {
+    padding:11px 12px; background:#fbfcff;
+    font-size:11px; line-height:1.7; color:#6d7d92;
+}
+.code-note strong { color:var(--navy); }
+
+.approach {
+    border:1px solid var(--border); border-radius:10px;
+    padding:15px; margin-top:11px;
+}
+.approach:first-of-type { margin-top:0; }
+.approach-top {
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:8px; margin-bottom:9px;
+}
+.approach-top h3 { margin:0; }
+.recommended {
+    padding:5px 7px; background:#e1f8eb; color:#168458;
+    border-radius:6px; font-size:9px; font-weight:850;
+}
+.complexity { display:flex; flex-wrap:wrap; gap:7px; margin-top:11px; }
+.complexity span {
+    padding:6px 9px; background:#f0edff; color:#6552c4;
+    border-radius:6px; font-size:10px; font-weight:800;
+}
+.approach-code { margin-top:11px; }
+.approach-code pre { min-height:0; }
+
+.two-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.info-panel { padding:15px; background:#fbfcff; border:1px solid var(--border); border-radius:10px; }
+.info-panel h3 { display:flex; align-items:center; gap:8px; }
+.info-panel h3 svg { width:17px; height:17px; color:var(--purple); }
+.check-list { list-style:none; padding:0; margin:0; }
+.check-list li {
+    position:relative; padding:9px 0 9px 23px;
+    border-bottom:1px solid #edf0f6; color:#687990;
+    font-size:12px; line-height:1.7;
+}
+.check-list li:last-child { border-bottom:0; }
+.check-list li:before {
+    content:""; position:absolute; left:0; top:14px;
+    width:10px; height:10px; border-radius:4px;
+    background:#d9f4e5; border:2px solid #42b785;
+}
+.tip-box {
+    padding:13px; border:1px solid #f2e2bb; border-radius:9px;
+    background:#fff8e9; color:#876a31; font-size:11px; line-height:1.8;
+}
+.tip-box strong { color:#79571c; }
+
+.practice-box { background:linear-gradient(140deg,#faf9ff,#fff); border-color:#e4ddff; }
+.question-text { font-size:13px; color:var(--navy); font-weight:750; line-height:1.7; margin-bottom:14px; }
+.question-options { display:flex; flex-direction:column; gap:8px; }
+.answer-option {
+    display:flex; align-items:flex-start; gap:10px; padding:12px;
+    border:1px solid #e5eaf3; border-radius:9px; background:white;
+    color:#596c85; font-size:12px; line-height:1.7; cursor:pointer;
+}
+.answer-option:has(input:checked) { border-color:#a99aff; background:#f6f3ff; }
+.answer-option input { margin-top:4px; accent-color:var(--purple); }
+.answer-option code { color:#4c3bb4; font-size:11px; }
+.practice-actions { display:flex; gap:9px; margin-top:13px; }
+.practice-actions button { flex:1; }
+.feedback {
+    display:none; padding:12px; margin-top:12px; border-radius:9px;
+    font-size:11px; line-height:1.8;
+}
+.feedback.show { display:block; }
+.feedback.correct { color:#167a51; background:#e4f8ed; }
+.feedback.incorrect { color:#a94d48; background:#fff0ed; }
+.footer-actions { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+
+.side-card { padding:18px; }
+.side-title {
+    display:flex; align-items:center; gap:9px;
+    color:var(--navy); font-size:14px; font-weight:850; margin-bottom:13px;
+}
+.side-title svg { width:18px; height:18px; color:var(--purple); }
+.concept-nav { display:flex; flex-direction:column; gap:4px; }
+.concept-nav a {
+    display:flex; align-items:center; gap:9px;
+    padding:10px; border-radius:8px; color:#657790;
+    text-decoration:none; font-size:11px; font-weight:650;
+}
+.concept-nav a svg { width:15px; height:15px; flex-shrink:0; }
+.concept-nav a:hover,.concept-nav a.active {
+    color:var(--purple); background:var(--purple-light); font-weight:800;
+}
+.snapshot-hero {
+    display:flex; align-items:center; gap:12px;
+    padding:13px; border-radius:10px; background:#f4f1ff; margin-bottom:13px;
+}
+.snapshot-symbol {
+    display:grid; place-items:center; flex-shrink:0;
+    width:42px; height:42px; border-radius:12px;
+    color:var(--purple); background:white;
+}
+.snapshot-symbol svg { width:22px; height:22px; }
+.snapshot-hero strong { display:block; font-size:12px; color:var(--navy); }
+.snapshot-hero span { display:block; font-size:10px; color:var(--muted); margin-top:4px; }
+.mini-stat {
+    display:flex; justify-content:space-between; gap:12px;
+    padding:10px 0; border-bottom:1px solid #edf0f6;
+    font-size:11px; color:#7a8aa0;
+}
+.mini-stat:last-child { border:0; }
+.mini-stat strong { color:#344964; text-align:right; }
+.fact-list { display:flex; flex-direction:column; gap:9px; }
+.fact {
+    display:flex; gap:9px; align-items:flex-start;
+    font-size:11px; line-height:1.7; color:#657790;
+}
+.fact svg { width:15px; height:15px; color:var(--green); flex-shrink:0; margin-top:2px; }
+.related-list { display:flex; flex-direction:column; gap:7px; }
+.related-link {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:8px; padding:10px; border:1px solid var(--border);
+    border-radius:8px; background:#fff; color:#586b84;
+    text-decoration:none; font-size:11px; font-weight:750;
+}
+.related-link:hover { border-color:#b9adff; background:#faf9ff; color:var(--purple); }
+.related-link svg { width:14px; height:14px; }
+.side-tip {
+    background:#fff8e9; border-color:#f4e6c7;
+}
+.side-tip .side-title svg { color:#d69a2d; }
+.side-tip p { font-size:11px; }
+
+@media(min-width:1500px) {
+    .page { padding:25px 32px 40px; }
+    .layout { grid-template-columns:minmax(0,1fr) 300px; gap:22px; }
+    .card { padding:24px; }
+    .visual-cell { min-height:70px; }
+}
+@media(max-width:1050px) {
+    .layout { grid-template-columns:minmax(0,1fr) 245px; gap:14px; }
+    .page { padding:20px; }
+    .card { padding:17px; }
+}
+@media(max-width:820px) {
+    .layout { grid-template-columns:minmax(0,1fr); }
+    .side-column { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .heading-row { align-items:flex-start; flex-direction:column; }
+    .selector-wrap { width:100%; max-width:350px; }
+}
+@media(max-width:560px) {
+    .page { padding:13px; }
+    h1 { font-size:25px; }
+    .topbar { align-items:flex-start; }
+    .brand { font-size:16px; }
+    .top-actions .btn { padding:9px; font-size:10px; }
+    .code-grid,.two-list { grid-template-columns:minmax(0,1fr); }
+    .side-column { display:flex; }
+    .visual-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .practice-actions { flex-direction:column; }
+}
+</style>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="page">
+
+<header class="topbar">
+    <div class="brand">
+        <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/>
+            </svg>
+        </span>
+        DebugDairy
+    </div>
+    <div class="top-actions">
+        <a class="btn" href="analysis-result.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m15 18-6-6 6-6M9 12h12"/><path d="M4 4v16"/>
+            </svg>
+            Back to Analysis
+        </a>
+    </div>
+</header>
+
+<section class="heading-row">
+    <div>
+        <div class="eyebrow">Personalized Learning · Concept Guide</div>
+        <h1 id="pageTitle">Array Indexing</h1>
+        <p class="subtitle" id="pageSubtitle">Understand the concept, visualize the logic, and avoid common mistakes.</p>
+        <div class="heading-pills">
+            <span class="pill blue" id="languagePill">Java</span>
+            <span class="pill" id="difficultyPill">Beginner</span>
+            <span class="pill green">Concept Explanation</span>
+        </div>
+    </div>
+    <div class="selector-wrap">
+        <label for="conceptSelect">EXPLORE ANOTHER CONCEPT</label>
+        <select id="conceptSelect" aria-label="Select a concept">
+            <option value="array">Array Indexing</option>
+            <option value="strings">String Handling</option>
+            <option value="loops">Loop Boundaries</option>
+            <option value="input">Input Handling</option>
+            <option value="oop">Object-Oriented Programming</option>
+            <option value="methods">Methods</option>
+            <option value="recursion">Recursion</option>
+            <option value="searching">Linear Search</option>
+            <option value="sorting">Bubble Sort</option>
+            <option value="collections">ArrayList</option>
+            <option value="exceptions">Exception Handling</option>
+        </select>
+    </div>
+</section>
+<div class="layout">
+<main class="main-column">
+    <section class="card" id="overview">
+        <div class="card-head">
+            <div class="section-icon" id="overviewIcon"></div>
+            <div>
+                <div class="section-label">01 · Overview</div>
+                <h2>Concept Overview</h2>
+            </div>
+        </div>
+        <div class="definition"><p id="definition"></p></div>
+        <div class="subsection">
+            <div class="subsection-title">Why Is It Important?</div>
+            <p id="importance"></p>
+        </div>
+    </section>
+
+    <section class="card" id="diagram">
+        <div class="card-head">
+            <div class="section-icon" data-icon="diagram"></div>
+            <div>
+                <div class="section-label">02 · Visual Learning</div>
+                <h2 id="diagramTitle">Understand It with a Diagram</h2>
+            </div>
+        </div>
+        <p id="diagramIntro"></p>
+        <div class="diagram">
+            <div class="diagram-top">
+                <strong id="diagramLabel">Visual Example</strong>
+                <span id="diagramHint">Illustration</span>
+            </div>
+            <div class="visual-grid" id="visualGrid"></div>
+            <div class="diagram-caption" id="diagramCaption"></div>
+            <div class="diagram-legend">
+                <span class="legend-item"><i class="legend-dot"></i>Example / valid state</span>
+                <span class="legend-item"><i class="legend-dot blue"></i>Step / position</span>
+                <span class="legend-item"><i class="legend-dot orange"></i>Important boundary</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="card" id="walkthrough">
+        <div class="card-head">
+            <div class="section-icon" data-icon="steps"></div>
+            <div>
+                <div class="section-label">03 · Step-by-Step</div>
+                <h2>How Does It Work?</h2>
+            </div>
+        </div>
+        <div class="step-list" id="steps"></div>
+    </section>
+
+    <section class="card" id="code">
+        <div class="card-head">
+            <div class="section-icon" data-icon="code"></div>
+            <div>
+                <div class="section-label">04 · Code Explanation</div>
+                <h2>Incorrect Code vs Correct Code</h2>
+            </div>
+        </div>
+        <div class="code-grid">
+            <div class="code-panel">
+                <div class="code-heading bad" id="wrongHeading"></div>
+                <pre><code id="wrongCode"></code></pre>
+                <div class="code-note" id="wrongExplanation"></div>
+            </div>
+            <div class="code-panel">
+                <div class="code-heading good" id="correctHeading"></div>
+                <pre><code id="correctCode"></code></pre>
+                <div class="code-note" id="correctExplanation"></div>
+            </div>
+        </div>
+        <div class="subsection">
+            <div class="subsection-title">What Changed and Why?</div>
+            <p id="codeExplanation"></p>
+        </div>
+    </section>
+
+    <section class="card" id="approaches">
+        <div class="card-head">
+            <div class="section-icon" data-icon="approach"></div>
+            <div>
+                <div class="section-label">05 · Problem Solving</div>
+                <h2>Approaches</h2>
+            </div>
+        </div>
+        <div id="approachList"></div>
+    </section>
+
+    <section class="card" id="mistakes">
+        <div class="card-head">
+            <div class="section-icon" data-icon="warning"></div>
+            <div>
+                <div class="section-label">06 · Debug Better</div>
+                <h2>Common Mistakes</h2>
+            </div>
+        </div>
+        <ul class="check-list" id="mistakeList"></ul>
+    </section>
+
+    <section class="card" id="takeaways">
+        <div class="card-head">
+            <div class="section-icon" data-icon="revision"></div>
+            <div>
+                <div class="section-label">07 · Revision</div>
+                <h2>Key Points to Remember</h2>
+            </div>
+        </div>
+        <ul class="check-list" id="takeawayList"></ul>
+    </section>
+
+    <section class="card practice-box" id="practice">
+        <div class="card-head">
+            <div class="section-icon" data-icon="practice"></div>
+            <div>
+                <div class="section-label">08 · Test Your Understanding</div>
+                <h2>Quick Practice Question</h2>
+            </div>
+        </div>
+        <div class="question-text" id="questionText"></div>
+        <div class="question-options" id="questionOptions"></div>
+        <div class="practice-actions">
+            <button class="btn btn-primary" id="checkButton" type="button">
+                Check Answer
+            </button>
+            <button class="btn" id="resetButton" type="button">
+                Try Again
+            </button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+    </section>
+
+    <div class="footer-actions">
+        <a class="btn" href="analysis-result.html">← Back to Analysis</a>
+        <button class="btn btn-primary" id="topButton" type="button">Back to Top ↑</button>
+    </div>
+
+</main>
+
+<aside class="side-column">
+
+    <section class="card side-card">
+        <div class="side-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 5h16M4 12h16M4 19h16"/><circle cx="8" cy="5" r="2" fill="white"/><circle cx="15" cy="12" r="2" fill="white"/>
+            </svg>
+            On This Page
+        </div>
+        <nav class="concept-nav" id="conceptNav">
+            <a href="#overview" class="active">Concept Overview</a>
+            <a href="#diagram">Visual Diagram</a>
+            <a href="#walkthrough">Step-by-Step</a>
+            <a href="#code">Code Explanation</a>
+            <a href="#approaches">Approaches</a>
+            <a href="#mistakes">Common Mistakes</a>
+            <a href="#takeaways">Key Takeaways</a>
+            <a href="#practice">Quick Practice</a>
+        </nav>
+    </section>
+
+    <section class="card side-card">
+        <div class="side-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 3 20 7v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>
+                <path d="m8 12 2.5 2.5L16 9"/>
+            </svg>
+            Concept Snapshot
+        </div>
+        <div class="snapshot-hero">
+            <div class="snapshot-symbol" id="snapshotIcon"></div>
+            <div>
+                <strong id="snapshotTopic">Arrays</strong>
+                <span id="snapshotFocus">Indexing fundamentals</span>
+            </div>
+        </div>
+        <div class="mini-stat"><span>Language</span><strong id="snapshotLanguage">Java</strong></div>
+        <div class="mini-stat"><span>Difficulty</span><strong id="snapshotDifficulty">Beginner</strong></div>
+        <div class="mini-stat"><span>Sections</span><strong>8 learning steps</strong></div>
+    </section>
+
+    <section class="card side-card">
+        <div class="side-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/>
+            </svg>
+            Key Facts
+        </div>
+        <div class="fact-list" id="keyFacts"></div>
+    </section>
+
+    <section class="card side-card">
+        <div class="side-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="11" cy="11" r="7"/><path d="m16 16 5 5M8 11h6M11 8v6"/>
+            </svg>
+            Related Concepts
+        </div>
+        <div class="related-list" id="relatedConcepts"></div>
+    </section>
+
+    <section class="card side-card side-tip">
+        <div class="side-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M9 18h6M10 22h4M8.5 14.5A7 7 0 1 1 15.5 14.5c-1 1-1.5 2-1.5 3h-4c0-1-.5-2-1.5-3z"/>
+            </svg>
+            Learning Tip
+        </div>
+        <p id="learningTip"></p>
+    </section>
+
+</aside>
+</div>
+</div>
+
+<script>
+const icons = {
+    array: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16M3 10h18M3 15h18"/></svg>',
+    strings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h11M4 17h16"/><path d="m17 10 3 2-3 2"/></svg>',
+    loops: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9A7 7 0 0 1 18 6l2 2M4 16l2 2a7 7 0 0 0 12.5-3"/></svg>',
+    input: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6M7 17h3"/></svg>',
+    oop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="3" width="8" height="6" rx="1.5"/><rect x="2" y="16" width="8" height="5" rx="1.5"/><rect x="14" y="16" width="8" height="5" rx="1.5"/><path d="M12 9v4M6 16v-3h12v3"/></svg>',
+    methods: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 8 4 12l4 4M16 8l4 4-4 4M14 5l-4 14"/></svg>',
+    recursion: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 7H5a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h3"/><path d="m5 4 3 3-3 3M16 17h3a3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3h-3"/><path d="m19 20-3-3 3-3"/></svg>',
+    searching: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M8 10.5h5"/></svg>',
+    sorting: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 11h10M10 16h4M12 3v18"/></svg>',
+    collections: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M16 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M8 8h8M8 12h8M8 16h8"/></svg>',
+    diagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/></svg>',
+    steps: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>',
+    code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
+    approach: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 22 20H2z"/><path d="M12 9v5M12 17h.01"/></svg>',
+    revision: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v15H4zM8 3v4M16 3v4M8 11h8M8 15h5"/></svg>',
+    practice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 12 2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>',
+    cross: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg>'
+};
+
+const concepts = {
+array: {
+    title:"Array Indexing", subtitle:"Understand array positions, boundaries, and safe traversal.",
+    language:"Java", difficulty:"Beginner", topic:"Arrays", focus:"Indexing & boundaries",
+    icon:"array",
+    definition:"An array stores multiple values of the same data type in an indexed sequence. Java uses zero-based indexing, which means the first element is at index 0.",
+    importance:"Correct indexing helps you read and update elements safely. A wrong boundary condition can cause an ArrayIndexOutOfBoundsException.",
+    visualTitle:"Array values and their indexes",
+    visualIntro:"Each value has a position. The first index is 0, and the final valid index is one less than the array length.",
+    visualLabel:"Array: {10, 20, 30, 40, 50}",
+    visualHint:"Values mapped to indexes",
+    visual:[["10","Index 0"],["20","Index 1"],["30","Index 2"],["40","Index 3"],["50","Index 4","last"]],
+    visualCaption:"For an array of length 5, valid indexes are 0 to 4. The last valid index is <strong>arr.length - 1</strong>.",
+    steps:[
+        ["Create the array","int[] arr = {10, 20, 30, 40, 50}; stores five integer values."],
+        ["Start at index zero","The first element is arr[0], which contains 10."],
+        ["Check the boundary","arr.length is 5, so arr[i] is valid when i is less than 5."],
+        ["Stop safely","When i becomes 5, i < arr.length is false, so the loop stops."]
+    ],
+    wrong:`for (int i = 0; i <= arr.length; i++) {\n    System.out.println(arr[i]);\n}`,
+    correct:`for (int i = 0; i < arr.length; i++) {\n    System.out.println(arr[i]);\n}`,
+    wrongExplanation:"The loop eventually tries arr[5]. That index is outside a five-element array.",
+    correctExplanation:"The condition allows indexes 0, 1, 2, 3, and 4 only.",
+    codeExplanation:"Array length counts the number of elements; it is not the last index. For length 5, the final valid index is 4.",
+    approaches:[
+        {title:"Standard indexed for loop",recommended:true,description:"Use this approach when you need the index, want to update values by position, or need to control the traversal.",code:`for (int i = 0; i < arr.length; i++) {\n    System.out.println(arr[i]);\n}`,time:"O(n)",space:"O(1)"},
+        {title:"Enhanced for loop",description:"Use this when you only need to process each element and do not need its index.",code:`for (int value : arr) {\n    System.out.println(value);\n}`,time:"O(n)",space:"O(1)"}
+    ],
+    mistakes:["Using i <= arr.length when accessing arr[i].","Assuming the first index is 1.","Confusing array length with the last valid index.","Accessing an element without checking the valid range."],
+    takeaways:["Java array indexes start at zero.","The last valid index is arr.length - 1.","Use i < arr.length for ordinary indexed traversal.","Invalid array access can cause ArrayIndexOutOfBoundsException."],
+    facts:["First index: 0","Last index: length - 1","Loop condition: i < arr.length","Invalid access: ArrayIndexOutOfBoundsException"],
+    related:["loops","searching","sorting"],
+    tip:"Before running a loop, write down the first index, last valid index, and stopping condition. Dry-run the first and final iterations.",
+    question:"For an array with 5 elements, what is the last valid index?",
+    options:["5","4","6","1"],answer:1,
+    feedback:"The array has five elements, but indexes start at zero. Its last valid index is 5 - 1 = 4."
+},
+strings: {
+    title:"String Handling", subtitle:"Compare text, access characters, and avoid common string mistakes.",
+    language:"Java",difficulty:"Beginner",topic:"Strings",focus:"Comparison & characters",icon:"strings",
+    definition:"A String represents a sequence of characters. Java provides methods such as length(), charAt(), and equals() to work with text.",
+    importance:"Correct string comparison and indexing are essential for checking words, validating input, and solving string-based coding problems.",
+    visualTitle:"A string is a sequence of characters",
+    visualIntro:"The string \"JAVA\" contains four characters. Each character has an index starting at zero.",
+    visualLabel:'String: "JAVA"',visualHint:"Character positions",
+    visual:[["J","Index 0"],["A","Index 1"],["V","Index 2"],["A","Index 3","last"]],
+    visualCaption:"Use <strong>text.charAt(index)</strong> to access a character. Use <strong>text.equals(other)</strong> to compare string contents.",
+    steps:[
+        ["Store a string","String language = \"JAVA\"; creates a string reference."],
+        ["Understand its length","language.length() returns 4."],
+        ["Access a character","language.charAt(0) returns 'J'."],
+        ["Compare the content","language.equals(\"JAVA\") returns true because the characters match."]
+    ],
+    wrong:`String name = new String("Java");\nif (name == "Java") {\n    System.out.println("Match");\n}`,
+    correct:`String name = new String("Java");\nif (name.equals("Java")) {\n    System.out.println("Match");\n}`,
+    wrongExplanation:"== compares object references. Two String objects can contain the same characters but be different objects.",
+    correctExplanation:"equals() compares the character content of the strings.",
+    codeExplanation:"Use equals() for string content comparison. Use equalsIgnoreCase() when case-insensitive comparison is required.",
+    approaches:[
+        {title:"Content comparison with equals()",recommended:true,description:"Use equals() when uppercase and lowercase differences should matter.",code:`if ("Java".equals(name)) {\n    System.out.println("Match");\n}`,time:"O(n) worst case",space:"O(1) auxiliary"},
+        {title:"Case-insensitive comparison",description:"Use equalsIgnoreCase() when the content should match regardless of letter case.",code:`if ("Java".equalsIgnoreCase(name)) {\n    System.out.println("Match");\n}`,time:"O(n) worst case",space:"O(1) auxiliary"}
+    ],
+    mistakes:["Using == when comparing string content.","Calling charAt(length()) which is outside the valid range.","Confusing an empty string with null.","Forgetting that Java strings are immutable."],
+    takeaways:["Use equals() for content comparison.","String indexes start at zero.","The last character index is length() - 1.","String objects are immutable."],
+    facts:["Content comparison: equals()","Length: length()","Character access: charAt(i)","Strings are immutable"],
+    related:["array","methods","input"],
+    tip:"Test strings with empty input, different letter cases, spaces, and repeated characters. These cases often expose hidden bugs.",
+    question:'What does "Java".equals("JAVA") return?',
+    options:["true","false","Compilation error","null"],answer:1,
+    feedback:"equals() is case-sensitive. The lowercase 'ava' and uppercase 'AVA' differ, so the result is false."
+},
+loops: {
+    title:"Loop Boundaries",subtitle:"Control repetition using initialization, conditions, and updates.",
+    language:"Java",difficulty:"Beginner",topic:"Loops",focus:"Conditions & iteration",icon:"loops",
+    definition:"A loop repeatedly executes a block of code while its condition remains true. A for loop commonly uses initialization, a condition, and an update.",
+    importance:"Correct loop boundaries help avoid missing values, extra iterations, and infinite loops.",
+    visualTitle:"How a for loop progresses",
+    visualIntro:"Consider a loop that prints numbers from 1 through 5. The condition is checked before each iteration.",
+    visualLabel:"Loop: i = 1; i <= 5; i++",visualHint:"Execution sequence",
+    visual:[["1","First"],["2","Next"],["3","Next"],["4","Next"],["5","Last"]],
+    visualCaption:"After printing 5, i becomes 6. The condition <strong>6 <= 5</strong> is false, so the loop terminates.",
+    steps:[
+        ["Initialize","int i = 1 sets the starting value."],
+        ["Check the condition","i <= 5 determines whether another iteration should run."],
+        ["Execute the body","The current value of i is printed."],
+        ["Update and repeat","i++ increases the value until the condition becomes false."]
+    ],
+    wrong:`for (int i = 1; i <= 5; ) {\n    System.out.println(i);\n}`,
+    correct:`for (int i = 1; i <= 5; i++) {\n    System.out.println(i);\n}`,
+    wrongExplanation:"The loop variable never changes, so the condition stays true and the loop does not terminate.",
+    correctExplanation:"i++ moves the loop variable toward the stopping boundary.",
+    codeExplanation:"A loop needs a condition that eventually becomes false. Always verify initialization, condition, and update together.",
+    approaches:[
+        {title:"For loop with explicit boundaries",recommended:true,description:"Best when the number of iterations or the required range is known.",code:`for (int i = 1; i <= 5; i++) {\n    System.out.println(i);\n}`,time:"O(n) for n iterations",space:"O(1)"},
+        {title:"While loop",description:"Useful when repetition depends on a condition that changes during execution.",code:`int i = 1;\nwhile (i <= 5) {\n    System.out.println(i);\n    i++;\n}`,time:"O(n) for n iterations",space:"O(1)"}
+    ],
+    mistakes:["Forgetting to update the loop variable.","Using a condition that never becomes false.","Choosing < or <= without checking the required range.","Updating in the wrong direction."],
+    takeaways:["Check initialization, condition, and update together.","Dry-run the first and last iterations.","Use < for exclusive upper bounds and <= when the endpoint is included.","Ensure the loop eventually terminates."],
+    facts:["Three parts: initialization, condition, update","i++ increases i by one","Condition is checked before each for-loop iteration","A missing update may cause an infinite loop"],
+    related:["array","searching","recursion"],
+    tip:"Make a small dry-run table with columns for the loop variable, condition result, and output. This quickly reveals off-by-one and infinite-loop errors.",
+    question:"What is printed by this loop? for (int i = 1; i <= 3; i++) System.out.print(i);",
+    options:["012","123","1234","234"],answer:1,
+    feedback:"The loop starts at 1 and includes 3, so it prints 123."
+},
+input: {
+    title:"Input Handling",subtitle:"Read, validate, and process user input safely.",
+    language:"Java",difficulty:"Beginner",topic:"Input",focus:"Reading & validation",icon:"input",
+    definition:"Input handling means reading data supplied by a user or another source and converting it into the form the program expects.",
+    importance:"Input validation helps prevent unexpected input types from crashing a program and makes programs more reliable.",
+    visualTitle:"The input validation flow",
+    visualIntro:"Validate the next token before reading it as an integer when invalid input is possible.",
+    visualLabel:"Read → Validate → Process",visualHint:"Decision flow",
+    visual:[["Read","Scanner"],["Check","hasNextInt()"],["Valid?","Decision"],["Process","nextInt()"],["Else","Message","last"]],
+    visualCaption:"If the next token is an integer, read it. Otherwise, handle the invalid input instead of calling nextInt() blindly.",
+    steps:[
+        ["Create a Scanner","Scanner sc = new Scanner(System.in) reads standard input."],
+        ["Check the expected type","hasNextInt() checks whether the next token can be read as an integer."],
+        ["Read valid input","Call nextInt() when the check succeeds."],
+        ["Handle invalid input","Display a useful message or ask for valid input again."]
+    ],
+    wrong:`Scanner sc = new Scanner(System.in);\nint age = sc.nextInt();`,
+    correct:`Scanner sc = new Scanner(System.in);\nif (sc.hasNextInt()) {\n    int age = sc.nextInt();\n    System.out.println(age);\n} else {\n    System.out.println("Enter an integer.");\n}`,
+    wrongExplanation:"If the next token is text such as \"hello\", nextInt() can throw InputMismatchException.",
+    correctExplanation:"hasNextInt() checks the token before attempting to read it as an integer.",
+    codeExplanation:"Use Scanner methods that match the expected type. Remember that nextInt() reads a token, while nextLine() reads the rest of a line.",
+    approaches:[
+        {title:"Validate with hasNextInt()",recommended:true,description:"Use this when you want to verify a token's type before reading it.",code:`if (sc.hasNextInt()) {\n    int number = sc.nextInt();\n    System.out.println(number);\n} else {\n    System.out.println("Invalid input");\n}`,time:"O(1) for one token",space:"O(1) auxiliary"},
+        {title:"Read a line and parse it",description:"Useful when the input should be handled as a complete line and parsing errors need explicit handling.",code:`String text = sc.nextLine();\ntry {\n    int number = Integer.parseInt(text);\n    System.out.println(number);\n} catch (NumberFormatException e) {\n    System.out.println("Invalid integer");\n}`,time:"O(n) in input length",space:"O(n) for the input string"}
+    ],
+    mistakes:["Calling nextInt() when the next token is not an integer.","Mixing nextLine() and nextInt() without understanding the newline.","Assuming all user input is valid.","Not handling invalid values or empty input."],
+    takeaways:["Choose Scanner methods based on the expected type.","Validate input when necessary.","Handle invalid input deliberately.","Test valid, invalid, and empty input cases."],
+    facts:["Integer token: nextInt()","Full line: nextLine()","Type check: hasNextInt()","Parsing failures may need exception handling"],
+    related:["strings","methods","loops"],
+    tip:"Test your program with a valid number, letters, a blank line, and a negative number. Think about which inputs your problem allows.",
+    question:"Which Scanner method reads an entire line of text?",
+    options:["nextInt()","next()","nextLine()","hasNextInt()"],answer:2,
+    feedback:"nextLine() reads the remaining text on the current line. next() reads only the next token."
+},
+oop: {
+    title:"Object-Oriented Programming",subtitle:"Learn classes, objects, inheritance, and abstraction.",
+    language:"Java",difficulty:"Beginner",topic:"OOP",focus:"Classes & objects",icon:"oop",
+    definition:"Object-oriented programming organizes code around classes and objects. A class describes data and behavior; an object is an instance of a class.",
+    importance:"OOP helps structure larger programs through encapsulation, inheritance, abstraction, and polymorphism.",
+    visualTitle:"Class and object relationship",
+    visualIntro:"A class defines a type. Objects created from that class have their own state.",
+    visualLabel:"Class → Objects",visualHint:"Basic OOP structure",
+    visual:[["Car","Class"],["car1","Object A"],["car2","Object B"],["State","Fields"],["Action","Methods","last"]],
+    visualCaption:"The class defines fields and methods. Each object is an instance with its own state, such as a particular colour or speed.",
+    steps:[
+        ["Define a class","Declare fields and methods that describe a type."],
+        ["Create an object","Use new to instantiate a concrete class."],
+        ["Access members","Use the object reference to call accessible methods or fields."],
+        ["Encapsulate state","Use access modifiers and methods to control how data is changed."]
+    ],
+    wrong:`abstract class Animal {\n    abstract void sound();\n}\nAnimal a = new Animal();`,
+    correct:`abstract class Animal {\n    abstract void sound();\n}\nclass Dog extends Animal {\n    @Override\n    void sound() { System.out.println("Bark"); }\n}`,
+    wrongExplanation:"An abstract class cannot be instantiated directly.",
+    correctExplanation:"Dog is a concrete subclass that implements the abstract method, so a Dog object can be created.",
+    codeExplanation:"Abstract classes can define shared structure and abstract behavior. A concrete subclass must implement inherited abstract methods.",
+    approaches:[
+        {title:"Create an object from a concrete class",recommended:true,description:"Instantiate a class that can provide the complete implementation of its required methods.",code:`class Student {\n    void study() {\n        System.out.println("Studying");\n    }\n}\nStudent s = new Student();\ns.study();`,time:"Depends on the operation",space:"Object storage depends on fields"},
+        {title:"Use abstraction with inheritance",description:"Define a common contract in an abstract base class and implement it in a concrete subclass.",code:`abstract class Shape {\n    abstract double area();\n}\nclass Circle extends Shape {\n    double r = 2;\n    double area() { return Math.PI * r * r; }\n}`,time:"Depends on the method",space:"Depends on object state"}
+    ],
+    mistakes:["Trying to instantiate an abstract class.","Forgetting to implement abstract methods in a concrete subclass.","Confusing overloading and overriding.","Exposing internal state unnecessarily."],
+    takeaways:["A class defines a type; an object is an instance.","Encapsulation controls access to state.","Inheritance supports reuse and specialization.","Polymorphism lets a base reference refer to a compatible subclass object."],
+    facts:["Class: blueprint/type","Object: instance","abstract classes cannot be instantiated directly","Encapsulation controls access to state"],
+    related:["methods","collections","strings"],
+    tip:"When learning OOP, identify the class, its fields, its methods, and the objects created from it. Then trace which overridden method runs.",
+    question:"Which statement about an abstract Java class is correct?",
+    options:["It must always be final.","It can be instantiated directly.","It cannot be instantiated directly.","It cannot contain methods."],answer:2,
+    feedback:"An abstract class cannot be instantiated directly. A concrete subclass can extend it and implement its abstract methods."
+},
+methods: {
+    title:"Java Methods",subtitle:"Organize reusable logic with parameters and return values.",
+    language:"Java",difficulty:"Beginner",topic:"Methods",focus:"Parameters & returns",icon:"methods",
+    definition:"A method is a named block of code that performs a task. It can accept parameters and may return a value to its caller.",
+    importance:"Methods improve code reuse, readability, testing, and decomposition of larger problems into smaller tasks.",
+    visualTitle:"How a method call works",
+    visualIntro:"Arguments are passed into a method, the method executes, and a return value can come back to the caller.",
+    visualLabel:"Call → Execute → Return",visualHint:"Method flow",
+    visual:[["main()","Caller"],["5, 3","Arguments"],["add()","Method"],["8","Return"],["Print","Result","last"]],
+    visualCaption:"For add(5, 3), the method receives two values and returns 8. A void method does not return a value.",
+    steps:[
+        ["Declare the method","Specify its return type, name, parameters, and body."],
+        ["Call the method","Pass arguments that match the parameter types."],
+        ["Execute the body","The method uses its parameters to perform the task."],
+        ["Return if required","A non-void method must return a compatible value on every normal path."]
+    ],
+    wrong:`static int add(int a, int b) {\n    int sum = a + b;\n}\n`,
+    correct:`static int add(int a, int b) {\n    int sum = a + b;\n    return sum;\n}\n`,
+    wrongExplanation:"The method declares an int return type but does not return a value.",
+    correctExplanation:"return sum sends the calculated integer back to the caller.",
+    codeExplanation:"The declared return type must match the value returned. Use void when the method does not return a value.",
+    approaches:[
+        {title:"Return a calculated value",recommended:true,description:"Use a return value when the caller needs the result of a calculation.",code:`static int add(int a, int b) {\n    return a + b;\n}\nint result = add(5, 3);`,time:"O(1) for addition",space:"O(1) auxiliary"},
+        {title:"Use a void method",description:"Use void for an operation whose purpose is an action rather than returning a result.",code:`static void greet(String name) {\n    System.out.println("Hello " + name);\n}\ngreet("Sam");`,time:"Depends on the body",space:"Depends on the body"}
+    ],
+    mistakes:["Forgetting a required return statement.","Passing arguments in the wrong order or type.","Calling an instance method without an appropriate object context.","Confusing parameters with arguments."],
+    takeaways:["Parameters are declared in the method signature.","Arguments are supplied at the call site.","The return type determines the expected result type.","void methods do not return a value."],
+    facts:["Parameters are part of the declaration","Arguments are passed when calling","return sends a value back","void means no return value"],
+    related:["oop","recursion","input"],
+    tip:"Before writing a method, state its input, output, and responsibility in one sentence. Then test a normal case and a boundary case.",
+    question:"What must a method declared as static int sum() provide on every normal path?",
+    options:["A String","An int value","A class object","No return value"],answer:1,
+    feedback:"The declared return type is int, so the method must return a compatible integer value on every normal path."
+},
+recursion: {
+    title:"Recursion",subtitle:"Solve a problem by reducing it to smaller instances of itself.",
+    language:"Java",difficulty:"Intermediate",topic:"Recursion",focus:"Base case & recursive case",icon:"recursion",
+    definition:"Recursion occurs when a method calls itself to solve a smaller version of the same problem.",
+    importance:"Recursion is useful for tree traversal, divide-and-conquer algorithms, backtracking, and problems that naturally have smaller subproblems.",
+    visualTitle:"Factorial recursion",
+    visualIntro:"factorial(4) reduces the input until it reaches the base case factorial(1).",
+    visualLabel:"factorial(4)",visualHint:"Calls unwind in reverse",
+    visual:[["4","4 × 3!"],["3","3 × 2!"],["2","2 × 1!"],["1","Base case"],["24","Result","last"]],
+    visualCaption:"The base case stops further recursive calls. Once it returns, the pending calls finish and produce the final result.",
+    steps:[
+        ["Choose a base case","For factorial, factorial(1) returns 1."],
+        ["Reduce the problem","factorial(n) calls factorial(n - 1)."],
+        ["Reach the base case","The calls continue until n becomes 1."],
+        ["Return through the calls","Each pending call multiplies n by the result returned by the smaller call."]
+    ],
+    wrong:`static int fact(int n) {\n    return n * fact(n - 1);\n}`,
+    correct:`static int fact(int n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1);\n}`,
+    wrongExplanation:"There is no base case, so the calls do not stop for positive n and eventually cause a stack overflow.",
+    correctExplanation:"The base case returns 1 for n <= 1, allowing the recursive calls to finish.",
+    codeExplanation:"A correct recursive solution needs a reachable base case and progress toward that base case. This factorial example assumes non-negative input.",
+    approaches:[
+        {title:"Recursive factorial",recommended:true,description:"Express factorial in terms of a smaller factorial. This illustrates the recursive structure clearly.",code:`static int fact(int n) {\n    if (n <= 1) return 1;\n    return n * fact(n - 1);\n}`,time:"O(n)",space:"O(n) call stack"},
+        {title:"Iterative factorial",description:"Use a loop to avoid the recursive call stack. This is often preferable for a simple factorial calculation.",code:`static int fact(int n) {\n    int result = 1;\n    for (int i = 2; i <= n; i++) result *= i;\n    return result;\n}`,time:"O(n)",space:"O(1) auxiliary"}
+    ],
+    mistakes:["Forgetting the base case.","Failing to make progress toward the base case.","Not checking the valid input range.","Ignoring call-stack usage or integer overflow."],
+    takeaways:["Every recursive solution needs a stopping condition.","Each call should reduce the problem.","Recursive calls use stack space.","Choose recursion when it makes the solution clearer, not automatically."],
+    facts:["Base case stops recursion","Recursive case reduces the problem","Calls use stack space","Factorial grows quickly and may overflow int"],
+    related:["methods","loops","searching"],
+    tip:"Trace recursive calls on paper. Write each call and its return value, and confirm that every path eventually reaches the base case.",
+    question:"What is the main purpose of a base case in recursion?",
+    options:["Make the method static","Stop further recursive calls","Increase the input","Create an array"],answer:1,
+    feedback:"The base case terminates the recursive chain so that pending calls can return their results."
+},
+searching: {
+    title:"Linear Search",subtitle:"Find a target by checking elements one by one.",
+    language:"Java",difficulty:"Beginner",topic:"Searching",focus:"Target lookup",icon:"searching",
+    definition:"Linear search examines elements in sequence until it finds the target or reaches the end of the collection.",
+    importance:"It is simple, works on unsorted arrays, and provides a useful foundation for understanding search algorithms.",
+    visualTitle:"Searching for 30",
+    visualIntro:"Compare the target with each element from left to right. Stop when the target is found.",
+    visualLabel:"Array: {10, 20, 30, 40, 50}",visualHint:"Target = 30",
+    visual:[["10","Check 1"],["20","Check 2"],["30","Found!","last"],["40","Not needed"],["50","Not needed"]],
+    visualCaption:"The target 30 is found at index 2 after three comparisons. If no element matches, the search reports that the target is absent.",
+    steps:[
+        ["Start at the first element","Set the current index to zero."],
+        ["Compare with the target","Check whether the current element equals the target."],
+        ["Return when found","Return the index immediately when a match is found."],
+        ["Report no match","If the loop ends, return -1 to indicate the target was not found."]
+    ],
+    wrong:`for (int i = 0; i < arr.length; i++) {\n    if (arr[i] == target) {\n        System.out.println("Found");\n    }\n}\nSystem.out.println("Not found");`,
+    correct:`int index = -1;\nfor (int i = 0; i < arr.length; i++) {\n    if (arr[i] == target) {\n        index = i;\n        break;\n    }\n}`,
+    wrongExplanation:"The code prints \"Not found\" even after a match because it does not stop or track whether the target was found.",
+    correctExplanation:"The corrected version records the index and breaks on the first match. A result of -1 means no match was found.",
+    codeExplanation:"For primitive integers, == compares values. For objects such as String, use the appropriate content comparison method.",
+    approaches:[
+        {title:"Return the first matching index",recommended:true,description:"Stop at the first match when the task asks for the target's first occurrence.",code:`static int search(int[] arr, int target) {\n    for (int i = 0; i < arr.length; i++) {\n        if (arr[i] == target) return i;\n    }\n    return -1;\n}`,time:"O(n) worst case",space:"O(1)"},
+        {title:"Track a result variable",description:"Use a variable when the rest of the method needs to process the search result after the loop.",code:`int index = -1;\nfor (int i = 0; i < arr.length; i++) {\n    if (arr[i] == target) { index = i; break; }\n}`,time:"O(n) worst case",space:"O(1)"}
+    ],
+    mistakes:["Forgetting to handle the not-found case.","Printing not-found immediately after the loop without checking a result.","Continuing after the first match when only the first index is needed.","Assuming the array is sorted."],
+    takeaways:["Linear search works on unsorted arrays.","Worst-case time complexity is O(n).","A common not-found return value is -1.","Best-case time is O(1) when the first element matches."],
+    facts:["Works on unsorted arrays","Worst case: O(n)","Best case: O(1)","-1 commonly means not found"],
+    related:["array","sorting","loops"],
+    tip:"Test the target at the first index, at the last index, more than once, and not present at all.",
+    question:"What is the worst-case time complexity of linear search on n elements?",
+    options:["O(1)","O(log n)","O(n)","O(n²)"],answer:2,
+    feedback:"In the worst case, linear search checks all n elements, so its time complexity is O(n)."
+},
+sorting: {
+    title:"Bubble Sort",subtitle:"Sort values by repeatedly swapping adjacent elements that are out of order.",
+    language:"Java",difficulty:"Beginner",topic:"Sorting",focus:"Comparison & swapping",icon:"sorting",
+    definition:"Bubble sort repeatedly compares adjacent elements and swaps them when they are in the wrong order. After each pass, a largest remaining value moves to the end.",
+    importance:"It is useful for learning comparisons, swapping, nested loops, and how sorting algorithms work, although it is inefficient for large arrays.",
+    visualTitle:"One pass of bubble sort",
+    visualIntro:"Sort the array {5, 2, 4, 1}. The first pass moves the largest value to the end.",
+    visualLabel:"Example pass",visualHint:"Ascending order",
+    visual:[["2","Swap 5, 2"],["4","Swap 5, 4"],["1","Compare 5, 1"],["5","Largest moves","last"]],
+    visualCaption:"After the first complete pass, the largest element is at the final position. More passes sort the remaining prefix.",
+    steps:[
+        ["Start at the beginning","Compare the first two adjacent elements."],
+        ["Swap if needed","If the left element is greater, exchange the two values."],
+        ["Continue across the array","Repeat the comparison for each adjacent pair in the unsorted portion."],
+        ["Repeat passes","Continue until the array is sorted; an optimized version can stop when no swap occurs."]
+    ],
+    wrong:`for (int i = 0; i < arr.length; i++) {\n    for (int j = 0; j < arr.length - 1; j++) {\n        if (arr[j] < arr[j + 1]) {\n            // swap\n        }\n    }\n}`,
+    correct:`for (int i = 0; i < arr.length - 1; i++) {\n    for (int j = 0; j < arr.length - 1 - i; j++) {\n        if (arr[j] > arr[j + 1]) {\n            int t = arr[j];\n            arr[j] = arr[j + 1];\n            arr[j + 1] = t;\n        }\n    }\n}`,
+    wrongExplanation:"The comparison uses the opposite condition for ascending order, and the swap is missing. The inner loop also repeats unnecessary comparisons.",
+    correctExplanation:"The corrected loop swaps when the left value is greater and reduces the unsorted range after each pass.",
+    codeExplanation:"The standard version takes O(n²) time in average and worst cases. An optimized version can achieve O(n) best-case time when the array is already sorted.",
+    approaches:[
+        {title:"Standard bubble sort",recommended:true,description:"Compare adjacent values and swap whenever they are out of ascending order.",code:`for (int i = 0; i < n - 1; i++) {\n    for (int j = 0; j < n - 1 - i; j++) {\n        if (a[j] > a[j + 1]) {\n            int t = a[j]; a[j] = a[j+1]; a[j+1] = t;\n        }\n    }\n}`,time:"O(n²) average/worst",space:"O(1) auxiliary"},
+        {title:"Optimized bubble sort",description:"Track whether a swap occurred. If an entire pass has no swaps, the array is already sorted.",code:`for (int i = 0; i < n - 1; i++) {\n    boolean swapped = false;\n    for (int j = 0; j < n - 1 - i; j++) {\n        if (a[j] > a[j + 1]) {\n            int t = a[j]; a[j] = a[j+1]; a[j+1] = t;\n            swapped = true;\n        }\n    }\n    if (!swapped) break;\n}`,time:"O(n) best; O(n²) worst",space:"O(1) auxiliary"}
+    ],
+    mistakes:["Swapping in the wrong direction for ascending order.","Using incorrect inner-loop boundaries.","Forgetting to swap values correctly.","Assuming bubble sort is efficient for large arrays."],
+    takeaways:["Compare adjacent elements.","Swap when the pair is out of order.","After each pass, the largest remaining element reaches the end.","Standard bubble sort uses O(1) auxiliary space."],
+    facts:["Adjacent comparison and swap","Standard time: O(n²)","Auxiliary space: O(1)","Optimized best case: O(n)"],
+    related:["array","loops","searching"],
+    tip:"Dry-run one complete pass and record every swap. Verify the largest value reaches the end of the unsorted portion.",
+    question:"In ascending bubble sort, when should adjacent values a[j] and a[j + 1] be swapped?",
+    options:["When a[j] < a[j + 1]","When a[j] > a[j + 1]","Always","Only when they are equal"],answer:1,
+    feedback:"For ascending order, swap when the left value is greater than the right value."
+},
+collections: {
+    title:"Java ArrayList",subtitle:"Work with a resizable list using the Java Collections Framework.",
+    language:"Java",difficulty:"Beginner",topic:"Collections",focus:"Resizable lists",icon:"collections",
+    definition:"ArrayList is a resizable-array implementation of Java's List interface. It supports indexed access and can grow or shrink as elements are added or removed.",
+    importance:"ArrayList is useful when the number of elements changes during program execution and you need convenient list operations.",
+    visualTitle:"How an ArrayList changes",
+    visualIntro:"Start with an empty list, add values, and then remove an element.",
+    visualLabel:"List operations",visualHint:"Example state",
+    visual:[["10","Index 0"],["20","Index 1"],["30","Index 2"],["Add","40"],["Remove","20","last"]],
+    visualCaption:"After adding 40, the list becomes [10, 20, 30, 40]. Removing the element at index 1 leaves [10, 30, 40].",
+    steps:[
+        ["Import ArrayList","Use import java.util.ArrayList;."],
+        ["Create a list","ArrayList<Integer> nums = new ArrayList<>(); creates an empty integer list."],
+        ["Add elements","nums.add(10) appends a value to the list."],
+        ["Read or remove elements","Use get(index) to read and remove(index) to remove an element at a position."]
+    ],
+    wrong:`ArrayList<int> nums = new ArrayList<>();\nnums.add(10);`,
+    correct:`ArrayList<Integer> nums = new ArrayList<>();\nnums.add(10);\nint value = nums.get(0);`,
+    wrongExplanation:"Java generic type arguments use reference types, not primitive types such as int.",
+    correctExplanation:"Integer is the wrapper class for int, so ArrayList<Integer> is valid.",
+    codeExplanation:"ArrayList uses wrapper types for generic elements. Use size() for the number of elements, not length.",
+    approaches:[
+        {title:"Create and access an ArrayList",recommended:true,description:"Use add(), get(), and size() for common list operations.",code:`ArrayList<Integer> nums = new ArrayList<>();\nnums.add(10);\nnums.add(20);\nint first = nums.get(0);\nSystem.out.println(nums.size());`,time:"Append: amortized O(1); get: O(1)",space:"O(n) for n elements"},
+        {title:"Traverse the list",description:"Use an indexed loop when you need positions, or an enhanced for loop when you only need values.",code:`for (int value : nums) {\n    System.out.println(value);\n}`,time:"O(n)",space:"O(1) auxiliary"}
+    ],
+    mistakes:["Using ArrayList<int> instead of ArrayList<Integer>.","Using length instead of size().","Calling get(index) with an invalid index.","Confusing remove(index) with remove(Object)."],
+    takeaways:["ArrayList is resizable.","Generic type arguments must be reference types.","Use size() to get the element count.","Indexed access uses get(index) and begins at zero."],
+    facts:["Package: java.util","Size: size()","Read: get(index)","Generic element type: ArrayList<Integer>"],
+    related:["array","loops","oop"],
+    tip:"Practice add(), get(), set(), remove(), and size(). Pay special attention to how removing an element shifts later indexes.",
+    question:"Which method returns the number of elements in an ArrayList named nums?",
+    options:["nums.length","nums.size()","nums.count()","nums.getSize()"],answer:1,
+    feedback:"ArrayList uses size() to report the number of elements. Arrays use the length field."
+},
+    exceptions: {
+        title: "Exception Handling",
+        subtitle: "Handle runtime errors and prevent unexpected program crashes.",
+        language: "Java",
+        difficulty: "Beginner",
+        topic: "Exception Handling",
+        focus: "Runtime errors & try-catch",
+        icon: "warning",
+
+        definition: "Exception handling is a Java mechanism for responding to errors that occur during program execution. The try block contains code that may throw an exception, and the catch block handles a matching exception.",
+
+        importance: "Handling exceptions helps programs respond to unexpected situations. Checking a divisor before division can prevent ArithmeticException when performing integer division.",
+
+        visualTitle: "How exception handling works",
+        visualIntro: "Risky code runs in a try block. If a matching exception occurs, control moves to the catch block.",
+        visualLabel: "Try → Exception → Catch",
+        visualHint: "Execution flow",
+
+        visual: [
+            ["Start", "Program"],
+            ["Try", "Risky code"],
+            ["Error", "Exception"],
+            ["Catch", "Handle it"],
+            ["Continue", "Safely", "last"]
+        ],
+
+        visualCaption: "A matching catch block handles an exception thrown inside the try block. If no exception occurs, the catch block is skipped.",
+
+        steps: [
+            ["Identify risky code", "Find operations that may fail, such as integer division by a variable."],
+            ["Use a try block", "Place the operation inside try when you intend to handle its exception."],
+            ["Catch the exception", "Use catch (ArithmeticException e) to handle an arithmetic error."],
+            ["Handle the situation", "Display a useful message or take another appropriate action."]
+        ],
+
+        wrong: `int a = 10;
+int b = 0;
+System.out.println(a / b);`,
+
+        correct: `int a = 10;
+int b = 0;
+
+if (b != 0) {
+    System.out.println(a / b);
+} else {
+    System.out.println("Cannot divide by zero");
+}`,
+
+        wrongExplanation: "When b is zero, integer division throws ArithmeticException. The program does not reach the next statement normally.",
+
+        correctExplanation: "The if condition checks the divisor before division, so the program avoids dividing by zero.",
+
+        codeExplanation: "For integer division, check that the divisor is not zero before performing the operation. Use try-catch when handling exceptions is appropriate for the situation.",
+        approaches: [
+            {
+                title: "Check before dividing",
+                recommended: true,
+                description: "Use a condition when you can validate the divisor before performing the division.",
+                code: `if (b != 0) {
+    System.out.println(a / b);
+} else {
+    System.out.println("Cannot divide by zero");
+}`,
+                time: "O(1)",
+                space: "O(1)"
+            },
+            {
+                title: "Handle the exception",
+                description: "Use try-catch when you want to handle an ArithmeticException from integer division.",
+                code: `try {
+    System.out.println(a / b);
+} catch (ArithmeticException e) {
+    System.out.println("Cannot divide by zero");
+}`,
+                time: "O(1) for this operation",
+                space: "O(1) auxiliary"
+            }
+        ],
+        mistakes: [
+            "Dividing an integer by zero.",
+            "Assuming every runtime exception is caught automatically.",
+            "Catching an exception without providing useful handling.",
+            "Using exceptions instead of simple validation when a condition can be checked directly."
+        ],
+        takeaways: [
+            "An exception can interrupt normal program execution.",
+            "Use try-catch to handle matching exceptions.",
+            "Integer division by zero throws ArithmeticException in Java.",
+            "Check a divisor before performing integer division when appropriate."
+        ],
+        facts: [
+            "Risky code: try",
+            "Exception handler: catch",
+            "Integer division by zero: ArithmeticException",
+            "Prevent division by zero: check divisor"
+        ],
+        related: ["methods", "input", "loops"],
+        tip: "Test division using a positive divisor, a negative divisor, and zero. Consider whether the program should reject the input or display a helpful message.",
+        question: "What happens when Java performs integer division by zero?",
+        options: [
+            "It always returns 0",
+            "It throws ArithmeticException",
+            "It returns null",
+            "It automatically skips the division"
+        ],
+        answer: 1,
+        feedback: "Integer division by zero throws ArithmeticException. Checking the divisor before division can prevent this error."
+    },
+
+};
+
+function setText(id, value) {
+    document.getElementById(id).textContent = value;
+}
+
+function renderSteps(items) {
+    const container = document.getElementById("steps");
+    container.replaceChildren();
+    items.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "step";
+        const number = document.createElement("div");
+        number.className = "step-number";
+        number.textContent = index + 1;
+        const body = document.createElement("div");
+        const heading = document.createElement("h3");
+        heading.textContent = item[0];
+        const text = document.createElement("p");
+        text.textContent = item[1];
+        body.append(heading, text);
+        row.append(number, body);
+        container.appendChild(row);
+    });
+}
+
+function renderList(id, items) {
+    const list = document.getElementById(id);
+    if (!list) return;
+
+    list.replaceChildren();
+
+    if (!Array.isArray(items) || items.length === 0) {
+        const li = document.createElement("li");
+        li.textContent = "No content provided for this section.";
+        list.appendChild(li);
+        return;
+    }
+
+    items.forEach(item => {
+        if (item === null || item === undefined || String(item).trim() === "") {
+            return;
+        }
+
+        const li = document.createElement("li");
+        li.textContent = String(item);
+        list.appendChild(li);
+    });
+}
+
+function renderDiagram(data) {
+    setText("diagramTitle", data.visualTitle);
+    setText("diagramIntro", data.visualIntro);
+    setText("diagramLabel", data.visualLabel);
+    setText("diagramHint", data.visualHint);
+
+    const grid = document.getElementById("visualGrid");
+    grid.replaceChildren();
+
+    data.visual.forEach(item => {
+        const cell = document.createElement("div");
+        cell.className = "visual-cell" + (item[2] === "last" ? " highlight" : "");
+        const strong = document.createElement("strong");
+        strong.textContent = item[0];
+        const small = document.createElement("small");
+        small.textContent = item[1];
+        cell.append(strong, small);
+        grid.appendChild(cell);
+    });
+
+    document.getElementById("diagramCaption").innerHTML = data.visualCaption;
+}
+
+function renderApproaches(items) {
+    const container = document.getElementById("approachList");
+    container.replaceChildren();
+
+    if (!Array.isArray(items) || items.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "No approaches were provided for this lesson.";
+        container.appendChild(message);
+        return;
+    }
+
+    items.forEach(item => {
+        if (!item || typeof item !== "object") return;
+
+        const section = document.createElement("div");
+        section.className = "approach";
+
+        const header = document.createElement("div");
+        header.className = "approach-top";
+
+        const title = document.createElement("h3");
+        title.textContent = item.title || "Approach";
+        header.appendChild(title);
+
+        if (item.recommended) {
+            const badge = document.createElement("span");
+            badge.className = "recommended";
+            badge.textContent = "Recommended";
+            header.appendChild(badge);
+        }
+
+        const description = document.createElement("p");
+        description.textContent = item.description || "";
+
+        const codePanel = document.createElement("div");
+        codePanel.className = "code-panel approach-code";
+
+        const pre = document.createElement("pre");
+        const code = document.createElement("code");
+        code.textContent = String(item.code || "").replace(/\\n/g, "\n");
+
+        pre.appendChild(code);
+        codePanel.appendChild(pre);
+
+        const complexity = document.createElement("div");
+        complexity.className = "complexity";
+
+        const time = document.createElement("span");
+        time.textContent = "Time: " + (item.time || "Not provided");
+
+        const space = document.createElement("span");
+        space.textContent = "Space: " + (item.space || "Not provided");
+
+        complexity.append(time, space);
+        section.append(header, description, codePanel, complexity);
+        container.appendChild(section);
+    });
+}
+function renderFacts(items) {
+    const container = document.getElementById("keyFacts");
+    if (!container) return;
+
+    container.replaceChildren();
+
+    if (!Array.isArray(items) || items.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "No key facts provided for this lesson.";
+        container.appendChild(message);
+        return;
+    }
+
+    items.forEach(item => {
+        if (item === null || item === undefined || String(item).trim() === "") {
+            return;
+        }
+
+        const row = document.createElement("div");
+        row.className = "fact";
+        row.innerHTML = icons.check;
+
+        const text = document.createElement("span");
+        text.textContent = String(item);
+
+        row.appendChild(text);
+        container.appendChild(row);
+    });
+}
+
+function renderRelated(keys) {
+    const container = document.getElementById("relatedConcepts");
+    container.replaceChildren();
+
+    keys.forEach(key => {
+        const data = concepts[key];
+        if (!data) return;
+
+        const link = document.createElement("a");
+        link.className = "related-link";
+        link.href = "concept-popup.html?concept=" + encodeURIComponent(key);
+        link.innerHTML = "<span></span>" + icons.arrow;
+        link.querySelector("span").textContent = data.title;
+        container.appendChild(link);
+    });
+}
+
+function renderQuestion(data) {
+    setText("questionText", data.question);
+    const container = document.getElementById("questionOptions");
+    container.replaceChildren();
+
+    data.options.forEach((option, index) => {
+        const label = document.createElement("label");
+        label.className = "answer-option";
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "conceptAnswer";
+        input.value = index;
+
+        const text = document.createElement("span");
+        text.textContent = option;
+
+        label.append(input, text);
+        container.appendChild(label);
+    });
+
+    const feedback = document.getElementById("feedback");
+    feedback.className = "feedback";
+    feedback.textContent = "";
+}
+
+
+async function renderConcept() {
+    const params = new URLSearchParams(window.location.search);
+    const requested = (params.get("concept") || "array").toLowerCase();
+
+    // Keep existing lessons available as fallbacks.
+    const fallback = concepts[requested] || concepts.array;
+    window.currentConceptLesson = null;
+    let data = fallback;
+
+    // Only request AI content when a concept isn't already predefined.
+    // Existing lessons remain unchanged.
+    if (!concepts[requested]) {
+        const conceptName = params.get("concept");
+
+        if (conceptName) {
+            try {
+                const response = await fetch(
+                    "http://localhost:8081/api/analysis/lesson",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            concept: conceptName,
+                            language: params.get("language") || "Java"
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Lesson request failed: ${response.status}`
+                    );
+                }
+
+                data = await response.json();
+                alert(
+    "Lesson data check:\n" +
+    "Approaches: " + (data.approaches?.length ?? "missing") + "\n" +
+    "Mistakes: " + (data.mistakes?.length ?? "missing") + "\n" +
+    "Takeaways: " + (data.takeaways?.length ?? "missing") + "\n" +
+    "Facts: " + (data.facts?.length ?? "missing") + "\n" +
+    "Question: " + (data.question || "EMPTY") + "\n" +
+    "Options: " + (data.options?.length ?? "missing")
+);
+console.log("Question:", data.question);
+console.log("Options:", data.options);
+console.log("Answer index:", data.answer);
+
+                const requiredFields = [
+                    "title",
+                    "definition",
+                    "wrong",
+                    "correct",
+                    "steps",
+                    "approaches",
+                    "mistakes",
+                    "takeaways",
+                    "facts",
+                    "related",
+                    "question",
+                    "options",
+                    "answer"
+                ];
+
+                for (const field of requiredFields) {
+                    if (data[field] === undefined || data[field] === null) {
+                        throw new Error(`Lesson missing field: ${field}`);
+                    }
+                }
+                window.currentConceptLesson = data;
+
+                // Provide defaults for optional display fields.
+                data.subtitle ||= "AI-generated programming lesson";
+                data.language ||= params.get("language") || "Java";
+                data.difficulty ||= "Beginner";
+                data.topic ||= conceptName;
+                data.focus ||= conceptName;
+                data.icon ||= "diagram";
+                data.importance ||= "";
+                data.visualTitle ||= data.title;
+                data.visualIntro ||= data.definition;
+                data.visualLabel ||= data.title;
+                data.visualHint ||= "Concept flow";
+                data.visual ||= [[data.title, "Concept"]];
+                data.visualCaption ||= data.definition;
+                data.tip ||= "";
+                data.wrongExplanation ||= "";
+                data.correctExplanation ||= "";
+                data.codeExplanation ||= "";
+                data.feedback ||= "";
+            } catch (error) {
+                console.error("Concept lesson error:", error);
+                alert(
+                    "Unable to generate this lesson. Showing the default lesson instead."
+                );
+                data = fallback;
+            }
+        }
+    }
+    
+    const conceptSelect = document.getElementById("conceptSelect");
+
+    if (conceptSelect) {
+        const matchingOption = Array.from(conceptSelect.options)
+            .find(option => option.value === requested);
+
+        conceptSelect.value = matchingOption ? requested : "";
+    }
+
+    document.title = data.title + " | DebugDairy";
+
+    setText("pageTitle", data.title);
+    setText("pageSubtitle", data.subtitle);
+    setText("languagePill", data.language);
+    setText("difficultyPill", data.difficulty);
+    setText("definition", data.definition);
+    setText("importance", data.importance);
+    setText("snapshotTopic", data.topic);
+    setText("snapshotFocus", data.focus);
+    setText("snapshotLanguage", data.language);
+    setText("snapshotDifficulty", data.difficulty);
+    setText("learningTip", data.tip);
+    setText("wrongExplanation", data.wrongExplanation);
+    setText("correctExplanation", data.correctExplanation);
+    setText("codeExplanation", data.codeExplanation);
+
+    const icon = icons[data.icon] || icons.diagram;
+    document.getElementById("overviewIcon").innerHTML = icon;
+    document.getElementById("snapshotIcon").innerHTML = icon;
+
+    document.querySelectorAll("[data-icon]").forEach(el => {
+        el.innerHTML = icons[el.dataset.icon] || icons.diagram;
+    });
+
+    document.getElementById("wrongHeading").innerHTML =
+        icons.cross + "<span>Incorrect Code</span>";
+
+    document.getElementById("correctHeading").innerHTML =
+        icons.check + "<span>Correct Code</span>";
+
+    setText("wrongCode", data.wrong);
+    setText("correctCode", data.correct);
+
+    renderDiagram(data);
+    renderSteps(data.steps);
+    renderApproaches(data.approaches);
+    renderList("mistakeList", data.mistakes);
+    renderList("takeawayList", data.takeaways);
+    renderFacts(data.facts);
+    renderRelated(data.related);
+    renderQuestion(data);
+
+    document.querySelectorAll(".concept-nav a").forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.getAttribute("href") === "#overview"
+        );
+    });
+
+    document.querySelectorAll(".concept-nav a").forEach(link => {
+        link.onclick = () => {
+            document.querySelectorAll(".concept-nav a").forEach(a =>
+                a.classList.remove("active")
+            );
+            link.classList.add("active");
+        };
+    });
+}
+document.getElementById("conceptSelect").addEventListener("change", function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("concept", this.value);
+    window.location.href = url.href;
+});
+
+document.getElementById("checkButton").addEventListener("click", function() {
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("concept") || "array";
+    const data = window.currentConceptLesson || concepts[
+    concepts[key] ? key : "array"
+];
+    const selected = document.querySelector('input[name="conceptAnswer"]:checked');
+    const feedback = document.getElementById("feedback");
+
+    feedback.className = "feedback show";
+
+    if (!selected) {
+        feedback.classList.add("incorrect");
+        feedback.textContent = "Please select an answer before checking.";
+        return;
+    }
+
+    if (Number(selected.value) === Number(data.answer)) {
+    feedback.classList.add("correct");
+    feedback.textContent = data.feedback || "Correct! Well done.";
+} else {
+    feedback.classList.add("incorrect");
+    feedback.textContent = "Incorrect. " +
+        (data.feedback || "Please try again.");
+}
+});
+
+document.getElementById("resetButton").addEventListener("click", function() {
+    document.querySelectorAll('input[name="conceptAnswer"]').forEach(input => input.checked = false);
+    const feedback = document.getElementById("feedback");
+    feedback.className = "feedback";
+    feedback.textContent = "";
+});
+
+document.getElementById("topButton").addEventListener("click", function() {
+    window.scrollTo({top:0,behavior:"smooth"});
+});
+
+renderConcept();
+</script>
+</body>
+</html>

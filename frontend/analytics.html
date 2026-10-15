@@ -1,0 +1,1095 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Analytics | DebugDairy</title>
+
+    <!-- Chart.js for analytics charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --sidebar-width: 283px;
+            --navy: #112846;
+            --navy-hover: #1c385b;
+            --purple: #5948e8;
+            --page-bg: #f4f7fd;
+            --card-border: #e1e8f2;
+            --muted: #7888a4;
+            --text: #142a49;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background: var(--page-bg);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ========== SIDEBAR ========== */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            width: var(--sidebar-width);
+            height: 100vh;
+            padding: 26px 17px 18px;
+
+            display: flex;
+            flex-direction: column;
+
+            background: var(--navy);
+            color: white;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin: 0 7px 36px;
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+            background: #e6e0ff;
+            color: #6549ed;
+            font-size: 27px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            width: 100%;
+            min-height: 49px;
+            padding: 0 14px;
+
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            border-radius: 9px;
+            color: #edf2ff;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+
+            transition: background 0.2s ease;
+        }
+
+        .nav-icon {
+            width: 22px;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .nav-link:hover {
+            background: var(--navy-hover);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--purple);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-profile {
+            margin-top: auto;
+            padding: 20px 5px 5px;
+
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+            background: #e3ddff;
+            color: #6048df;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .profile-info {
+            min-width: 0;
+        }
+
+        .profile-info strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .profile-info p {
+            margin: 0;
+            color: #b9c8df;
+            font-size: 11px;
+            overflow-wrap: anywhere;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+
+       .analytics-main {
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    margin-left: var(--sidebar-width);
+    padding: 22px 24px;
+    min-width: 0;
+}
+
+.page-title {
+    font-size: 24px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.analytics-card {
+    min-width: 0;
+    min-height: 300px;
+    padding: 17px 18px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+}
+
+.language-chart-container {
+    height: 220px;
+}
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+
+            padding-bottom: 22px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #dce4f0;
+        }
+
+        .breadcrumb {
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 27px;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .period-filters {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .period-btn {
+            min-height: 37px;
+            padding: 9px 14px;
+
+            border: 1px solid #e1e7f1;
+            border-radius: 8px;
+            background: #fff;
+
+            color: #61718e;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .period-btn:hover {
+            border-color: #a69af8;
+        }
+
+        .period-btn.active {
+            color: #fff;
+            background: var(--purple);
+            border-color: var(--purple);
+        }
+
+        /* ========== ANALYTICS GRID ========== */
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .analytics-card {
+            min-width: 0;
+            min-height: 340px;
+            padding: 20px 22px;
+
+            background: #fff;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+
+            box-shadow: 0 3px 12px rgba(24, 43, 75, 0.025);
+        }
+
+        .card-heading {
+            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .card-description {
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 255px;
+        }
+
+        .language-chart-container {
+            height: 255px;
+        }
+
+        /* ========== COMMON MISTAKES ========== */
+
+        .mistake-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .mistake-item {
+            min-height: 48px;
+            padding: 13px 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            border-bottom: 1px solid #edf0f6;
+            font-size: 13px;
+        }
+
+        .mistake-item:last-child {
+            border-bottom: none;
+        }
+
+        .mistake-name {
+            line-height: 1.5;
+        }
+
+        .mistake-count {
+            min-width: 28px;
+            padding: 5px 8px;
+
+            border-radius: 6px;
+            background: #f0edff;
+            color: #5b46e8;
+
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* ========== FOOTER ========== */
+
+        .analytics-footer {
+            margin-top: 20px;
+            padding: 16px 18px;
+
+            border: 1px solid #e5e0ff;
+            border-radius: 11px;
+            background: #f5f2ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .footer-message strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .footer-message p {
+            margin: 0;
+            color: #6f7e99;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .footer-link {
+            color: var(--purple);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== RESPONSIVE ========== */
+
+        @media (max-width: 1100px) {
+            :root {
+                --sidebar-width: 235px;
+            }
+
+            .sidebar {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .brand {
+                margin-left: 3px;
+                font-size: 19px;
+            }
+
+           .analytics-main {
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    margin-left: var(--sidebar-width);
+    padding: 22px 24px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.page-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.analytics-card {
+    min-width: 0;
+    min-height: 300px;
+    padding: 17px 18px;
+    box-sizing: border-box;
+}
+
+.chart-container,
+.language-chart-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+}
+        }
+    </style>   
+</head>
+<body>
+
+    <!-- Fixed sidebar -->
+    <aside class="sidebar">
+
+        <a href="dashboard.html" class="brand">
+            <span class="brand-icon">✳</span>
+            <span>DebugDairy</span>
+        </a>
+
+        <nav class="sidebar-nav">
+
+            <a class="nav-link" href="dashboard.html">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a class="nav-link" href="new-analysis.html">
+                <span class="nav-icon">⌘</span>
+                <span>New Analysis</span>
+            </a>
+
+            <a class="nav-link" href="my-learning.html">
+                <span class="nav-icon">▤</span>
+                <span>My Learning</span>
+            </a>
+
+            <a class="nav-link active" href="analytics.html"
+               aria-current="page">
+                <span class="nav-icon">▥</span>
+                <span>Analytics</span>
+            </a>
+
+            <a class="nav-link" href="recurring-mistakes.html">
+                <span class="nav-icon">↻</span>
+                <span>Recurring Mistakes</span>
+            </a>
+
+            <a class="nav-link" href="practice.html">
+                <span class="nav-icon">◎</span>
+                <span>Practice</span>
+            </a>
+        </nav>
+
+        <!-- Profile stays at the bottom of the sidebar -->
+        <div class="sidebar-profile">
+            <div class="profile-avatar">S</div>
+
+            <div class="profile-info">
+                <strong>Student</strong>
+                <p>Keep learning!</p>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Main analytics content -->
+    <main class="analytics-main">
+
+        <header class="page-header">
+
+            <div>
+                <div class="breadcrumb">Workspace</div>
+                <h1 class="page-title">Learning Analytics</h1>
+                <p class="page-subtitle">
+                    Understand your coding mistakes and track your progress.
+                </p>
+            </div>            
+<div class="period-filters" aria-label="Choose date range">
+    <button class="period-btn active" data-days="1"
+            type="button" aria-pressed="true">
+        1 Day
+    </button>
+
+    <button class="period-btn" data-days="5"
+            type="button" aria-pressed="false">
+        5 Days
+    </button>
+
+    <button class="period-btn" data-days="30"
+            type="button" aria-pressed="false">
+        1 Month
+    </button>
+
+    <button class="period-btn" data-days="90"
+            type="button" aria-pressed="false">
+        3 Months
+    </button>
+</div>
+        </header>
+
+        <section class="analytics-grid">
+
+            <!-- 1. Mistake Categories -->
+            <article class="analytics-card">
+                <h2 class="card-heading">Mistake Categories</h2>
+                <p class="card-description">
+                    Understand where you need practice.
+                </p>
+
+                <div class="chart-container">
+                    <canvas id="categoryChart"
+                            aria-label="Mistakes grouped by category">
+                    </canvas>
+                </div>
+            </article>
+
+            <!-- 2. Mistakes Over Time -->
+            <article class="analytics-card">
+                <h2 class="card-heading">Mistakes Over Time</h2>
+                <p class="card-description">
+                    Review your recorded mistakes over time.
+                </p>
+
+                <div class="chart-container">
+                    <canvas id="timelineChart"
+                            aria-label="Mistake trend over time">
+                    </canvas>
+                </div>
+            </article>
+
+            <!-- 3. Mistakes by Language -->
+            <article class="analytics-card">
+                <h2 class="card-heading">Mistakes by Language</h2>
+                <p class="card-description">
+                    See which programming languages appear in your history.
+                </p>
+
+                <div class="chart-container language-chart-container">
+                    <canvas id="languageChart"
+                            aria-label="Mistakes grouped by programming language">
+                    </canvas>
+                </div>
+            </article>
+
+            <!-- 4. Most Common Mistakes -->
+            <article class="analytics-card">
+                <h2 class="card-heading">Most Common Mistakes</h2>
+                <p class="card-description">
+                    The mistake types recorded most frequently.
+                </p>
+
+                <ul class="mistake-list" id="commonMistakes">
+
+                    <li class="mistake-item">
+                        <span class="mistake-name">
+                            Array boundary error
+                        </span>
+                        <span class="mistake-count">5</span>
+                    </li>
+
+                    <li class="mistake-item">
+                        <span class="mistake-name">
+                            Missing semicolon
+                        </span>
+                        <span class="mistake-count">4</span>
+                    </li>
+
+                    <li class="mistake-item">
+                        <span class="mistake-name">
+                            Null pointer exception
+                        </span>
+                        <span class="mistake-count">3</span>
+                    </li>
+
+                    <li class="mistake-item">
+                        <span class="mistake-name">
+                            Wrong input format
+                        </span>
+                        <span class="mistake-count">3</span>
+                    </li>
+
+                    <li class="mistake-item">
+                        <span class="mistake-name">Others</span>
+                        <span class="mistake-count">2</span>
+                    </li>
+
+                </ul>
+            </article>
+
+        </section>
+
+        <footer class="analytics-footer">
+            <div class="footer-message">
+                <strong>Small mistakes. Big progress.</strong>
+                <p>
+                    Review recurring errors, understand the concept,
+                    and practise until you feel confident.
+                </p>
+            </div>
+
+            <a href="practice.html" class="footer-link">
+                Review weak areas →
+            </a>
+        </footer>
+
+    </main>
+
+    
+<script>
+const API_URL = "http://localhost:8081/api/analysis";
+
+const categoryColors = [
+    "#7051df", "#a363e8", "#f2b541", "#ee708b",
+    "#50c1a3", "#367bea", "#e94c91"
+];
+
+const languageColors = [
+    "#367bea", "#51bd91", "#e94c91", "#f2b541",
+    "#8060e9", "#ee708b"
+];
+
+let allRecords = [];
+let categoryChart;
+let timelineChart;
+let languageChart;
+let selectedDays = 1;
+
+function field(record, ...keys) {
+    for (const key of keys) {
+        if (record[key] !== null &&
+            record[key] !== undefined &&
+            String(record[key]).trim() !== "") {
+            return record[key];
+        }
+    }
+    return "";
+}
+
+function getTitle(record) {
+    return String(
+        field(record, "issue_title", "issueTitle") || "Unspecified issue"
+    ).trim();
+}
+
+function isActualMistake(record) {
+    const title = getTitle(record).toLowerCase();
+    const category = String(record.category || "").toLowerCase();
+
+    if (/no issues found|no issue detected|no errors found|no error detected|no issues detected/.test(title)) {
+        return false;
+    }
+
+    if (/no issue|no error|no mistake|general review/.test(category) &&
+        /no issues found|no issue detected|no errors found|no error detected|no issues detected/.test(title)) {
+        return false;
+    }
+
+    return true;
+}
+
+function normalizeCategory(category) {
+    const value = String(category || "").trim().toLowerCase();
+
+    if (value.includes("logic")) return "Logic";
+    if (value.includes("syntax") || value.includes("compile")) return "Syntax";
+    if (value.includes("runtime") || value.includes("exception")) return "Runtime";
+    if (value.includes("input")) return "Input";
+
+    // Concept, General Review, Other, and unknown categories
+    // are grouped under Others.
+    return "Others";
+}
+
+function normalizeLanguage(language) {
+    const value = String(language || "Unknown").trim().toLowerCase();
+
+    const labels = {
+        java: "Java",
+        python: "Python",
+        javascript: "JavaScript",
+        js: "JavaScript",
+        "c++": "C++",
+        cpp: "C++",
+        c: "C",
+        "c#": "C#"
+    };
+
+    return labels[value] ||
+        value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getRecordDate(record) {
+    const value = field(record, "created_at", "createdAt");
+    if (!value) return null;
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+
+function getRecordsForPeriod(days) {
+    const now = new Date();
+
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+
+    // Include today and the preceding days.
+    start.setDate(start.getDate() - days + 1);
+
+    return allRecords.filter(record => {
+        const date = getRecordDate(record);
+        return date && date >= start && date <= now;
+    });
+}
+
+
+function groupCounts(records, getKey) {
+    const counts = new Map();
+
+    records.forEach(record => {
+        const key = getKey(record);
+        counts.set(key, (counts.get(key) || 0) + 1);
+    });
+
+    return Array.from(counts.entries())
+        .sort((a, b) => b[1] - a[1]);
+}
+
+function createCharts() {
+    if (typeof Chart === "undefined") {
+        document.querySelectorAll(".chart-container").forEach(container => {
+            container.textContent =
+                "Charts could not load. Check your internet connection.";
+        });
+        return false;
+    }
+
+    categoryChart = new Chart(
+        document.getElementById("categoryChart"),
+        {
+            type: "bar",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Mistakes",
+                    data: [],
+                    backgroundColor: [],
+                    borderRadius: 4,
+                    maxBarThickness: 46
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 },
+                        grid: { color: "#edf0f6" }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        }
+    );
+
+    timelineChart = new Chart(
+        document.getElementById("timelineChart"),
+        {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Mistakes",
+                    data: [],
+                    borderColor: "#8060e9",
+                    backgroundColor: "rgba(128, 96, 233, 0.12)",
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointBackgroundColor: "#8060e9"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 },
+                        grid: { color: "#edf0f6" }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 7 }
+                    }
+                }
+            }
+        }
+    );
+
+    languageChart = new Chart(
+        document.getElementById("languageChart"),
+        {
+            type: "doughnut",
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: "#ffffff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "58%",
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        }
+    );
+
+    return true;
+}
+
+function updateCommonMistakes(records) {
+    const list = document.getElementById("commonMistakes");
+    list.innerHTML = "";
+
+    // Combine mistake names that differ only by letter case
+    const normalizedCounts = new Map();
+
+    records.forEach(record => {
+        const title = getTitle(record);
+
+        if (!title) return;
+
+        const normalizedTitle = title.trim().toLowerCase();
+
+        if (!normalizedTitle) return;
+
+        if (normalizedCounts.has(normalizedTitle)) {
+            normalizedCounts.get(normalizedTitle).count++;
+        } else {
+            normalizedCounts.set(normalizedTitle, {
+                title: title.trim(),
+                count: 1
+            });
+        }
+    });
+
+    const counts = Array.from(normalizedCounts.values())
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+    if (counts.length === 0) {
+        const item = document.createElement("li");
+        item.className = "mistake-item";
+        item.textContent = "No mistakes recorded in this period.";
+        list.appendChild(item);
+        return;
+    }
+
+    counts.forEach(({ title, count }) => {
+        const item = document.createElement("li");
+        item.className = "mistake-item";
+
+        const name = document.createElement("span");
+        name.className = "mistake-name";
+
+        // Display a consistent title for division-by-zero errors
+        name.textContent =
+            title.toLowerCase() === "division by zero"
+                ? "Division by Zero"
+                : title;
+
+        const badge = document.createElement("span");
+        badge.className = "mistake-count";
+        badge.textContent = count;
+
+        item.append(name, badge);
+        list.appendChild(item);
+    });
+}
+function updateAnalytics(days) {
+    selectedDays = days;
+
+    document.querySelectorAll(".period-btn").forEach(button => {
+        const active = Number(button.dataset.days) === days;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+
+    const periodRecords = getRecordsForPeriod(days);
+
+console.log(
+    "Total records:", allRecords.length,
+    "| Days selected:", days,
+    "| Records matched:", periodRecords.length
+);
+const mistakes = periodRecords.filter(isActualMistake);
+console.log(
+    "Saved categories:",
+    periodRecords.map(record => ({
+        id: record.id,
+        category: record.category,
+        title: getTitle(record)
+    }))
+);
+
+    // Category chart
+    
+const categoryOrder = ["Logic", "Syntax", "Runtime", "Input", "Others"];
+
+const categoryCounts = new Map(
+    groupCounts(
+        mistakes,
+        record => normalizeCategory(record.category)
+    )
+);
+
+categoryChart.data.labels = categoryOrder;
+
+categoryChart.data.datasets[0].data = categoryOrder.map(
+    category => categoryCounts.get(category) || 0
+);
+
+categoryChart.data.datasets[0].backgroundColor =
+    categoryOrder.map((_, index) =>
+        categoryColors[index % categoryColors.length]
+    );
+
+categoryChart.update();
+
+
+    // Language chart
+    const languages = groupCounts(
+        mistakes,
+        record => normalizeLanguage(record.language)
+    );
+    console.log("Language counts:", JSON.stringify(languages));
+
+    languageChart.data.labels = languages.map(item => item[0]);
+    languageChart.data.datasets[0].data = languages.map(item => item[1]);
+    languageChart.data.datasets[0].backgroundColor =
+        languages.map((_, index) =>
+            languageColors[index % languageColors.length]
+        );
+    languageChart.update();
+
+    // Timeline: group actual mistakes by calendar date
+    const dailyCounts = new Map();
+
+    mistakes.forEach(record => {
+        const date = getRecordDate(record);
+        if (!date) return;
+
+        const key = [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, "0"),
+            String(date.getDate()).padStart(2, "0")
+        ].join("-");
+
+        dailyCounts.set(key, (dailyCounts.get(key) || 0) + 1);
+    });
+
+    const timeline = Array.from(dailyCounts.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]));
+
+    timelineChart.data.labels = timeline.map(([key]) => {
+        const date = new Date(key + "T00:00:00");
+        return date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short"
+        });
+    });
+
+    timelineChart.data.datasets[0].data =
+        timeline.map(([, count]) => count);
+
+    timelineChart.update();
+
+    // Most common mistakes
+    updateCommonMistakes(mistakes);
+}
+
+async function loadAnalytics() {
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error("API returned status " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+            throw new Error("The API did not return an analysis list.");
+        }
+
+        allRecords = data;
+
+        if (!createCharts()) return;
+
+        updateAnalytics(selectedDays);
+    } catch (error) {
+        console.error("Analytics loading error:", error);
+
+        document.querySelectorAll(".chart-container").forEach(container => {
+            container.textContent =
+                "Unable to load analytics. Make sure the backend is running on port 8081, then refresh.";
+        });
+
+        const list = document.getElementById("commonMistakes");
+        list.innerHTML = "";
+
+        const item = document.createElement("li");
+        item.className = "mistake-item";
+        item.textContent = "Could not load saved analyses.";
+        list.appendChild(item);
+    }
+}
+
+document.querySelectorAll(".period-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        if (allRecords.length || categoryChart) {
+            updateAnalytics(Number(button.dataset.days));
+        }
+    });
+});
+
+loadAnalytics();
+</script>
+</body>
+</html>

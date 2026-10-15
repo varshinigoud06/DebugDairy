@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personalized Practice | DebugDairy</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f8fc;color:#1d3150;font-family:Arial,sans-serif}
+.app-layout{display:flex;min-height:100vh;width:100%;align-items:stretch}
+.app-layout>.sidebar{position:relative;inset:auto;flex:0 0 235px;width:235px;min-width:235px;min-height:100vh;height:auto;display:flex;flex-direction:column}
+.practice-main{flex:1;min-width:0;padding:25px;background:#f5f8fc}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.header h1{font-size:24px;margin:0 0 6px;color:#203655}
+.header p{font-size:12px;color:#8591a4;margin:0}
+.header-label{font-size:11px;color:#6d56d9;background:#eeeaff;padding:9px 12px;border-radius:7px;font-weight:bold;white-space:nowrap}
+.top-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(205px,.85fr);gap:14px}
+.panel{background:#fff;border:1px solid #e5ebf4;border-radius:11px;padding:16px;min-width:0;box-shadow:0 3px 10px #20365508}
+.panel h2{font-size:14px;margin:0 0 13px;color:#243956}
+.subtext{font-size:11px;color:#8995a7;margin:-6px 0 12px}
+.weak-list{display:flex;flex-direction:column;gap:8px}
+.weak-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border:1px solid #eef1f6;border-radius:8px;min-width:0}
+.topic-icon{width:29px;height:29px;flex-shrink:0;display:grid;place-items:center;border-radius:8px}
+.topic-icon svg{width:17px;height:17px}
+.red{background:#ffebed;color:#df4f5d}
+.yellow{background:#fff3d8;color:#c58b20}
+.green{background:#e1f8e9;color:#15945c}
+.purple{background:#eee8ff;color:#7858d9}
+.weak-name{flex:1;min-width:0;font-size:12px;font-weight:700}
+.status{font-size:10px;font-weight:bold;padding:5px 7px;border-radius:5px;white-space:nowrap}
+.status-red{color:#c74655;background:#ffebed}
+.status-yellow{color:#ad791a;background:#fff3d8}
+.status-green{color:#168454;background:#e1f8e9}
+.right-stack{display:flex;flex-direction:column;gap:12px}
+.streak-panel{background:linear-gradient(135deg,#fffaf2,#fff);border-color:#f5e9d7}
+.streak-heading{display:flex;align-items:center;justify-content:space-between}
+.flame{width:43px;height:43px;border-radius:12px;background:#ffead8;color:#ef6c32;display:grid;place-items:center}
+.flame svg{width:29px;height:29px}
+.streak-number{font-size:31px;font-weight:800;color:#243956;margin:8px 0 4px}
+.streak-number span{font-size:16px}
+.streak-caption{font-size:11px;color:#8792a4;margin:0}
+.badge-mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.mini-badge{text-align:center;min-width:0}
+.mini-badge .medal{width:37px;height:37px;border-radius:50%;display:grid;place-items:center;margin:0 auto 6px}
+.medal svg{width:22px;height:22px}
+.medal.gold{background:#fff0c9;color:#d39a17}
+.medal.blue{background:#deedff;color:#3478d1}
+.medal.violet{background:#ece3ff;color:#8054d6}
+.mini-badge strong{display:block;font-size:10px;line-height:1.4;color:#344761}
+.section{margin-top:15px}
+.section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.section-title h2{font-size:15px;margin:0 0 5px}
+.section-title p{font-size:11px;color:#8a96a8;margin:0;line-height:1.5}
+.progress-panel{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.progress-panel h2{margin-bottom:7px}
+.progress-panel p{font-size:11px;color:#8491a3;margin:0}
+.reduced-number{font-size:22px;color:#218b64;font-weight:800;margin-top:7px}
+.bars{height:43px;display:flex;align-items:flex-end;gap:4px;flex-shrink:0}
+.bars span{width:7px;border-radius:3px 3px 0 0;background:#35b58b}
+.bars span:nth-child(1){height:12px}
+.bars span:nth-child(2){height:19px}
+.bars span:nth-child(3){height:25px}
+.bars span:nth-child(4){height:32px}
+.bars span:nth-child(5){height:40px}
+.search-row{display:grid;grid-template-columns:minmax(150px,1fr) repeat(3,minmax(105px,145px));gap:9px;margin:14px 0}
+.search-box{position:relative;min-width:0}
+.search-box svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#8491a4}
+.search-box input,.search-row select{width:100%;height:39px;border:1px solid #dfe6f0;border-radius:7px;background:#fff;color:#354761;padding:0 10px;font-size:11px;outline:none}
+.search-box input{padding-left:34px}
+.search-box input:focus,.search-row select:focus{border-color:#8d79ee;box-shadow:0 0 0 2px #eeeaff}
+.question-list{display:flex;flex-direction:column;gap:9px}
+.question-card{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #e6ebf3;background:#fff;border-radius:9px;min-width:0}
+.question-card:hover{border-color:#cfc4ff}
+.q-number{width:29px;height:29px;flex-shrink:0;border-radius:7px;background:#f0edff;color:#6f58d7;font-size:12px;font-weight:bold;display:grid;place-items:center}
+.q-info{flex:1;min-width:0}
+.q-info h3{font-size:12px;line-height:1.5;margin:0 0 5px;color:#273b58}
+.q-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tag{font-size:9px;padding:4px 6px;border-radius:4px;background:#f0edff;color:#6d55d5;font-weight:700}
+.tag.easy{background:#e1f8e9;color:#168454}
+.tag.medium{background:#fff2dc;color:#ae7717}
+.tag.hard{background:#ffeaed;color:#c74655}
+.platform{font-size:10px;color:#7e8ba0}
+.solve-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex-shrink:0;padding:9px 12px;background:#6852df;color:#fff;border:0;border-radius:6px;text-decoration:none;font-size:10px;font-weight:bold}
+.solve-btn:hover{background:#5140c5}
+.solve-btn svg{width:13px;height:13px}
+.no-results{display:none;padding:20px;text-align:center;color:#8290a4;font-size:12px;border:1px dashed #dbe3ef;border-radius:8px;background:white}
+.tip{display:flex;gap:11px;align-items:flex-start;padding:13px;border:1px solid #dce8ff;border-radius:9px;background:#edf4ff}
+.tip-icon{width:33px;height:33px;flex-shrink:0;display:grid;place-items:center;background:#d9e7ff;color:#356bc7;border-radius:8px}
+.tip-icon svg{width:19px;height:19px}
+.tip h3{font-size:12px;color:#284d80;margin:1px 0 5px}
+.tip p{font-size:11px;line-height:1.6;color:#5c7496;margin:0}
+.app-layout>.sidebar .sidebar-profile{position:static;display:flex;align-items:center;gap:9px;margin-top:auto;padding:16px 3px 7px;border-top:1px solid rgba(255,255,255,.15)}
+.sidebar-profile .profile-avatar{display:grid;place-items:center;flex-shrink:0;width:32px;height:32px;border-radius:50%}
+.sidebar-profile>div:last-child{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sidebar-profile strong,.sidebar-profile small{display:block;line-height:1.4;overflow-wrap:anywhere}
+.sidebar-profile strong{font-size:12px;color:#fff}
+.sidebar-profile small{font-size:10px;color:#bdcbe0}
+@media(max-width:1050px){
+ .practice-main{padding:19px}
+ .top-grid{grid-template-columns:minmax(0,1fr) minmax(190px,.8fr)}
+ .search-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+ .app-layout{flex-direction:column}
+ .app-layout>.sidebar{width:100%;min-width:0;min-height:auto;height:auto;flex:0 0 auto}
+ .app-layout>.sidebar .sidebar-profile{margin-top:12px}
+ .practice-main{width:100%;padding:15px}
+ .top-grid{grid-template-columns:minmax(0,1fr)}
+ .header h1{font-size:21px}
+ .header-label{font-size:9px}
+ .question-card{flex-wrap:wrap}
+ .q-info{flex-basis:calc(100% - 50px)}
+ .solve-btn{margin-left:41px}
+}
+@media(max-width:390px){
+ .search-row{grid-template-columns:minmax(0,1fr)}
+ .status{font-size:9px}
+}
+/* Remove underlines from sidebar links */
+.sidebar a,
+.sidebar a:hover,
+.sidebar a:focus,
+.sidebar a:visited {
+    text-decoration: none !important;
+}
+
+/* Weak Areas - Improved Layout */
+
+.weak-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.weak-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #f8faff;
+    border: 1px solid #e1e8f5;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.weak-item:hover {
+    background: #f0f5ff;
+}
+
+.topic-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    flex: 1;
+}
+
+.topic-name {
+    color: #193153;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.weak-item .subtext {
+    font-size: 12px;
+    color: #77859d;
+}
+
+.weak-item .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.weak-item .status-red {
+    color: #c62845;
+    background: #ffe8ed;
+}
+
+.weak-item .status-yellow {
+    color: #a76500;
+    background: #fff2d8;
+}
+
+.weak-item .status-green {
+    color: #16805d;
+    background: #ddf7eb;
+}
+
+@media (max-width: 600px) {
+    .weak-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Dynamic Badge States */
+.mini-badge {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.mini-badge .medal {
+    transition: filter 0.25s ease, background 0.25s ease;
+}
+
+/* Locked badge */
+.mini-badge:not(.badge-earned) {
+    opacity: 0.45;
+}
+
+.mini-badge:not(.badge-earned) .medal {
+    filter: grayscale(1);
+    background: #e8edf4;
+}
+
+/* Earned badge */
+.mini-badge.badge-earned {
+    opacity: 1;
+}
+
+.mini-badge.badge-earned .medal {
+    filter: none;
+}
+
+.mini-badge.badge-earned strong {
+    color: #193153;
+}
+
+</style>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="app-layout">
+<aside class="sidebar">
+<div class="sidebar-brand"><span class="brand-icon">✳</span><span>DebugDairy</span></div>
+<nav class="sidebar-nav">
+<a class="nav-link" href="dashboard.html"><span>▦</span> Dashboard</a>
+<a class="nav-link" href="new-analysis.html">
+    <span>⌘</span> New Analysis
+</a>
+<a class="nav-link" href="my-learning.html"><span>▤</span> My Learning</a>
+<a class="nav-link" href="analytics.html"><span>▥</span> Analytics</a>
+<a class="nav-link" href="recurring-mistakes.html"><span>↻</span> Recurring Mistakes</a>
+<a class="nav-link active" href="practice.html">
+    <span>◎</span> Practice
+</a>
+</nav>
+<div class="sidebar-user">
+                <div class="user-avatar">S</div>
+                <div>
+                    <strong>Student</strong>
+                    <small>Keep learning!</small>
+                </div>
+            </div>
+</aside>
+<main class="practice-main">
+
+    <header class="header">
+        <div>
+            <h1>Personalized Practice</h1>
+            <p>Turn your mistakes into strengths, one problem at a time.</p>
+        </div>
+        <div class="header-label">✦ Your learning space</div>
+    </header>
+
+    <section class="top-grid">
+
+        
+<!-- WEAK AREAS -->
+<div class="panel">
+    <h2>Your Weak Areas</h2>
+    <p class="subtext">Focus on the topics that need attention.</p>
+    <div class="weak-list" id="weakAreasList">
+        <p class="subtext">Loading your weak areas...</p>
+    </div>
+</div>
+
+
+        <!-- STREAK AND BADGES -->
+        <div class="right-stack">
+
+            <div class="panel streak-panel">
+                <div class="streak-heading">
+                    <h2 style="margin:0">Learning Streak</h2>
+                    <div class="flame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22a7 7 0 0 0 7-7c0-4-3-6-4-10-2 2-3 4-3 6-2-1-3-3-3-5-3 3-5 6-5 9a8 8 0 0 0 8 7Z"/>
+                            <path d="M12 22a4 4 0 0 0 4-4c0-2-2-3-3-5-1 2-4 3-4 5a3 3 0 0 0 3 4Z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="streak-number" id="learningStreak">0 <span>Days</span></div>
+                <p class="streak-caption">Keep it up! Build your coding habit.</p>
+            </div>
+
+            <div class="panel">
+                <h2>Badges</h2>
+                <div class="badge-mini-grid">
+
+                    <div class="mini-badge" id="badgeFirstFix">
+                        <div class="medal gold">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="12" cy="9" r="6"/>
+                                <path d="m8 14-2 7 6-3 6 3-2-7M12 6v6M9 9h6"/>
+                            </svg>
+                        </div>
+                        <strong>First Fix</strong>
+                    </div>
+
+                    <div class="mini-badge" id="badgeDebugDetective">
+                        <div class="medal blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M12 3 20 6v6c0 5-4 8-8 10-4-2-8-5-8-10V6l8-3Z"/>
+                                <circle cx="12" cy="9" r="2"/>
+                                <path d="m8 15 2-2 2 2 2-2 2 2"/>
+                            </svg>
+                        </div>
+                        <strong>Debug<br>Detective</strong>
+                    </div>
+
+                    <div class="mini-badge" id="badgeConceptMaster">
+                        <div class="medal violet">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>
+                            </svg>
+                        </div>
+                        <strong>Concept<br>Master</strong>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+   
+<!-- LEARNING PROGRESS -->
+<section class="panel section progress-panel">
+    <div>
+        <h2>Learning Progress</h2>
+        <p>Total code analyses completed.</p>
+        <div class="reduced-number" id="totalPracticeAnalyses">—</div>
+    </div>
+    <div class="bars" aria-label="Learning progress decoration">
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+</section>
+
+
+    <!-- RECOMMENDED CODING QUESTIONS -->
+    <section class="section">
+        <div class="section-title">
+            <div>
+                <h2>Recommended Practice Questions</h2>
+                <p>Start with questions that match your learning goals.</p>
+            </div>
+        </div>
+
+        <div class="search-row">
+
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m16 16 4 4"/>
+                </svg>
+                <input id="questionSearch" type="search"
+                       placeholder="Search coding questions..."
+                       aria-label="Search coding questions">
+            </div>
+
+            <select id="languageFilter" aria-label="Filter language">
+                <option value="all">All Languages</option>
+                <option value="Java">Java</option>
+                <option value="Python">Python</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="C">C</option>
+                <option value="C++">C++</option>
+            </select>
+
+            <select id="difficultyFilter" aria-label="Filter difficulty">
+                <option value="all">All Difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+
+            <select id="platformFilter" aria-label="Filter platform">
+                <option value="all">All Platforms</option>
+                <option value="LeetCode">LeetCode</option>
+                <option value="HackerRank">HackerRank</option>
+            </select>
+
+        </div>
+
+        <div class="question-list" id="questionList">
+
+           
+<article class="question-card"
+    data-title="two sum find target array"
+    data-topic="arrays"
+    data-language="Java"
+    data-difficulty="Easy"
+    data-platform="LeetCode">
+
+                <div class="q-number">1</div>
+                <div class="q-info">
+                    <h3>Two Sum</h3>
+                    <div class="q-meta">
+                        <span class="tag easy">Easy</span>
+                        <span class="tag">Java</span>
+                        <span class="platform">LeetCode</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://leetcode.com/problems/two-sum/"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="valid parentheses brackets stack"
+                data-language="Java" data-difficulty="Easy" data-platform="LeetCode">
+                <div class="q-number">2</div>
+                <div class="q-info">
+                    <h3>Valid Parentheses</h3>
+                    <div class="q-meta">
+                        <span class="tag easy">Easy</span>
+                        <span class="tag">Java</span>
+                        <span class="platform">LeetCode</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://leetcode.com/problems/valid-parentheses/"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="maximum subarray kadane array"
+                data-language="Java" data-difficulty="Medium" data-platform="LeetCode">
+                <div class="q-number">3</div>
+                <div class="q-info">
+                    <h3>Maximum Subarray</h3>
+                    <div class="q-meta">
+                        <span class="tag medium">Medium</span>
+                        <span class="tag">Java</span>
+                        <span class="platform">LeetCode</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://leetcode.com/problems/maximum-subarray/"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="reverse string two pointers"
+                data-language="Python" data-difficulty="Easy" data-platform="LeetCode">
+                <div class="q-number">4</div>
+                <div class="q-info">
+                    <h3>Reverse String</h3>
+                    <div class="q-meta">
+                        <span class="tag easy">Easy</span>
+                        <span class="tag">Python</span>
+                        <span class="platform">LeetCode</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://leetcode.com/problems/reverse-string/"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="arrays ds reverse array"
+                data-language="Java" data-difficulty="Easy" data-platform="HackerRank">
+                <div class="q-number">5</div>
+                <div class="q-info">
+                    <h3>Arrays - DS</h3>
+                    <div class="q-meta">
+                        <span class="tag easy">Easy</span>
+                        <span class="tag">Java</span>
+                        <span class="platform">HackerRank</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://www.hackerrank.com/challenges/arrays-ds/problem"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="java loops i loop basics"
+                data-language="Java" data-difficulty="Easy" data-platform="HackerRank">
+                <div class="q-number">6</div>
+                <div class="q-info">
+                    <h3>Java Loops I</h3>
+                    <div class="q-meta">
+                        <span class="tag easy">Easy</span>
+                        <span class="tag">Java</span>
+                        <span class="platform">HackerRank</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://www.hackerrank.com/challenges/java-loops-i/problem"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="making anagrams strings frequency"
+                data-language="Python" data-difficulty="Medium" data-platform="HackerRank">
+                <div class="q-number">7</div>
+                <div class="q-info">
+                    <h3>Making Anagrams</h3>
+                    <div class="q-meta">
+                        <span class="tag medium">Medium</span>
+                        <span class="tag">Python</span>
+                        <span class="platform">HackerRank</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://www.hackerrank.com/challenges/making-anagrams/problem"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+            <article class="question-card"
+                data-title="longest substring without repeating characters"
+                data-language="JavaScript" data-difficulty="Medium" data-platform="LeetCode">
+                <div class="q-number">8</div>
+                <div class="q-info">
+                    <h3>Longest Substring Without Repeating Characters</h3>
+                    <div class="q-meta">
+                        <span class="tag medium">Medium</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="platform">LeetCode</span>
+                    </div>
+                </div>
+                <a class="solve-btn" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+                   target="_blank" rel="noopener noreferrer">
+                    Solve
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 3h7v7M10 14 21 3"/>
+                        <path d="M19 13v7H4V5h7"/>
+                    </svg>
+                </a>
+            </article>
+
+        </div>
+
+        <div class="no-results" id="noResults">
+            No matching questions found. Try another search or filter.
+        </div>
+    </section>
+
+    <section class="tip section">
+        <div class="tip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M9 18h6M10 22h4"/>
+                <path d="M8 14.5a7 7 0 1 1 8 0c-.8.6-1 1.2-1 2.5h-6c0-1.3-.2-1.9-1-2.5Z"/>
+            </svg>
+        </div>
+        <div>
+            <h3>Practice Tip</h3>
+            <p>Try solving the problem yourself first. Dry-run with a small example, then review the solution if you're stuck. Understand the logic instead of memorising code.</p>
+        </div>
+    </section>
+
+</main>
+</div>
+
+<script>
+const searchInput = document.getElementById("questionSearch");
+const languageFilter = document.getElementById("languageFilter");
+const difficultyFilter = document.getElementById("difficultyFilter");
+const platformFilter = document.getElementById("platformFilter");
+const cards = [...document.querySelectorAll(".question-card")];
+const noResults = document.getElementById("noResults");
+
+async function updateLearningStreak() {
+    const streakElement = document.getElementById("learningStreak");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load learning history");
+        }
+
+        const records = await response.json();
+
+        // Get unique local dates on which analyses were saved.
+        const activityDates = new Set(
+            records
+                .map(record => record.created_at || record.createdAt)
+                .filter(Boolean)
+                .map(value => {
+                    const date = new Date(value);
+                    return Number.isNaN(date.getTime())
+                        ? null
+                        : `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+                })
+                .filter(Boolean)
+        );
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        // A streak remains active if the user analysed code today or yesterday.
+        const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        const yesterdayKey = `${yesterday.getFullYear()}-${yesterday.getMonth()}-${yesterday.getDate()}`;
+
+        if (!activityDates.has(todayKey) && !activityDates.has(yesterdayKey)) {
+            streakElement.innerHTML = '0 <span>Days</span>';
+            return;
+        }
+
+        let streak = 0;
+        const currentDate = new Date(today);
+
+        if (!activityDates.has(todayKey)) {
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        while (true) {
+            const key = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`;
+
+            if (!activityDates.has(key)) break;
+
+            streak++;
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        streakElement.innerHTML = `${streak} <span>Days</span>`;
+    } catch (error) {
+        console.error("Could not update learning streak:", error);
+        streakElement.innerHTML = '— <span>Days</span>';
+    }
+}
+
+updateLearningStreak();
+
+async function updateWeakAreas() {
+    const weakAreasList = document.getElementById("weakAreasList");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analysis records");
+        }
+
+        const records = await response.json();
+
+        if (!records.length) {
+            weakAreasList.innerHTML =
+                '<p class="subtext">No analysis records yet. Analyse some code to discover your weak areas.</p>';
+            return;
+        }
+
+        const topicCounts = {};
+
+        records.forEach(record => {
+            const topic =
+                record.concept_to_revise ||
+                record.conceptToRevise ||
+                record.category ||
+                record.issue_title ||
+                record.issueTitle;
+
+            if (!topic || !String(topic).trim()) return;
+
+            const name = String(topic).trim();
+            topicCounts[name] = (topicCounts[name] || 0) + 1;
+        });
+
+        const topics = Object.entries(topicCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+        if (!topics.length) {
+            weakAreasList.innerHTML =
+                '<p class="subtext">No topic information found in your saved analyses yet.</p>';
+            return;
+        }
+
+        weakAreasList.innerHTML = topics.map(([topic, count]) => {
+            const status = count >= 3
+                ? { label: "Needs Practice", className: "status-red" }
+                : count >= 2
+                    ? { label: "Improving", className: "status-yellow" }
+                    : { label: "Review", className: "status-green" };
+
+            return `
+                <div class="weak-item">
+                    <div class="topic-info">
+                        <span class="topic-name">${topic.replace(/[&<>"']/g, char => ({
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                            "'": "&#39;"
+                        })[char])}</span>
+                        <span class="subtext">${count} recorded ${count === 1 ? "occurrence" : "occurrences"}</span>
+                    </div>
+                    <span class="status ${status.className}">${status.label}</span>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Could not update weak areas:", error);
+        weakAreasList.innerHTML =
+            '<p class="subtext">Could not load weak areas. Check that the backend is running.</p>';
+    }
+}
+
+updateWeakAreas();
+
+async function updateTotalPracticeAnalyses() {
+    const totalElement = document.getElementById("totalPracticeAnalyses");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analyses");
+        }
+
+        const records = await response.json();
+        totalElement.textContent = records.length;
+
+    } catch (error) {
+        console.error("Could not load total analyses:", error);
+        totalElement.textContent = "—";
+    }
+}
+
+updateTotalPracticeAnalyses();
+
+async function updateBadges() {
+    const firstFix = document.getElementById("badgeFirstFix");
+    const debugDetective = document.getElementById("badgeDebugDetective");
+    const conceptMaster = document.getElementById("badgeConceptMaster");
+
+    try {
+        const response = await fetch("http://localhost:8081/api/analysis");
+
+        if (!response.ok) {
+            throw new Error("Failed to load analysis records");
+        }
+
+        const records = await response.json();
+
+        const hasConcept = record =>
+            Boolean(
+                (record.concept_to_revise || record.conceptToRevise || "")
+                    .toString().trim()
+            );
+
+       firstFix.classList.toggle("badge-earned", records.length >= 1);
+
+debugDetective.classList.toggle(
+    "badge-earned",
+    records.length >= 25
+);
+
+conceptMaster.classList.toggle(
+    "badge-earned",
+    records.filter(hasConcept).length >= 50
+);
+
+    } catch (error) {
+        console.error("Could not update badges:", error);
+    }
+}
+
+updateBadges();
+
+function filterQuestions() {
+    const search = searchInput.value.trim().toLowerCase();
+    const language = languageFilter.value;
+    const difficulty = difficultyFilter.value;
+    const platform = platformFilter.value;
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const title = card.dataset.title.toLowerCase();
+        const matchesSearch = title.includes(search);
+        const matchesLanguage = language === "all" ||
+            card.dataset.language === language;
+        const matchesDifficulty = difficulty === "all" ||
+            card.dataset.difficulty === difficulty;
+        const matchesPlatform = platform === "all" ||
+            card.dataset.platform === platform;
+
+        const show = matchesSearch && matchesLanguage &&
+            matchesDifficulty && matchesPlatform;
+
+        card.style.display = show ? "flex" : "none";
+
+        if (show) visibleCount++;
+    });
+
+    noResults.style.display = visibleCount === 0 ? "block" : "none";
+}
+
+searchInput.addEventListener("input", filterQuestions);
+languageFilter.addEventListener("change", filterQuestions);
+difficultyFilter.addEventListener("change", filterQuestions);
+platformFilter.addEventListener("change", filterQuestions);
+</script>
+
+</body>
+</html>

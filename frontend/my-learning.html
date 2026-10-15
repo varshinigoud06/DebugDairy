@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning | DebugDairy</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body.app-body {
+            margin: 0;
+            background: #f6f8fe;
+            color: #172b49;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .app-layout {
+            display: flex;
+            align-items: stretch;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: relative;
+            flex: 0 0 238px;
+            width: 238px;
+            min-width: 238px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+            padding: 18px 10px;
+            border-top: 1px solid rgba(255,255,255,.15);
+        }
+
+        .sidebar-profile .profile-avatar {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e9eaff;
+            color: #5948e8;
+            font-weight: bold;
+        }
+
+        .sidebar-profile strong {
+            color: white;
+            font-size: 13px;
+        }
+
+        /* MAIN */
+        .learning-main {
+            flex: 1;
+            min-width: 0;
+            padding: 25px 22px;
+            background: #f6f8fe;
+        }
+
+        .learning-main button,
+        .learning-main input,
+        .learning-main select {
+            font: inherit;
+        }
+
+        .learning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .learning-header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .learning-header p {
+            margin: 0;
+            color: #7c8aa3;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .learning-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 9px;
+            background: #6048ef;
+            color: white;
+            font-size: 12px !important;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .learning-btn:hover {
+            background: #4935d4;
+            transform: translateY(-1px);
+        }
+
+        /* FOUR COLOURFUL STAT CARDS */
+        .learning-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .learning-stat {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            min-width: 0;
+            min-height: 78px;
+            padding: 12px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .learning-stat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 18px rgba(45, 58, 100, .09);
+        }
+
+        .stat-purple {
+            background: linear-gradient(125deg, #eeeaff, #f8f6ff);
+            border-color: #e3dcff;
+        }
+
+        .stat-blue {
+            background: linear-gradient(125deg, #e4f4ff, #f2faff);
+            border-color: #d7edff;
+        }
+
+        .stat-pink {
+            background: linear-gradient(125deg, #ffe8f1, #fff6fa);
+            border-color: #ffdfeb;
+        }
+
+        .stat-green {
+            background: linear-gradient(125deg, #ddf9ec, #f3fff8);
+            border-color: #d2f2e1;
+        }
+
+        .stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            border-radius: 50%;
+        }
+
+        .stat-purple .stat-icon {
+            background: #ded6ff;
+            color: #6849ef;
+        }
+
+        .stat-blue .stat-icon {
+            background: #cceaff;
+            color: #1688d4;
+        }
+
+        .stat-pink .stat-icon {
+            background: #ffd5e5;
+            color: #ed477a;
+        }
+
+        .stat-green .stat-icon {
+            background: #c8f2db;
+            color: #1aab75;
+        }
+
+        .stat-icon svg {
+            width: 19px;
+            height: 19px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .stat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-label {
+            display: block;
+            margin: 1px 0 6px;
+            color: #6f7d98;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .stat-number {
+            display: block;
+            color: #182d4e;
+            font-size: 23px;
+            line-height: 1.1;
+        }
+
+        .stat-foot {
+            display: block;
+            margin-top: 5px;
+            color: #8190a7;
+            font-size: 9px;
+            line-height: 1.4;
+        }
+
+        .stat-trend {
+            color: #1cac83;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .progress-track {
+            height: 4px;
+            margin-top: 7px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(32, 120, 82, .12);
+        }
+
+        .progress-fill {
+            width: 75%;
+            height: 100%;
+            border-radius: inherit;
+            background: #2ab889;
+        }
+
+        /* SEARCH AND FILTERS */
+        .learning-panel {
+            padding: 12px;
+            border: 1px solid #e4eaf5;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(36, 57, 96, .025);
+        }
+
+        .learning-filters {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) 130px 130px 112px;
+            gap: 9px;
+            margin-bottom: 13px;
+        }
+
+        .search-wrap {
+            position: relative;
+            min-width: 0;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            top: 50%;
+            left: 11px;
+            width: 14px;
+            height: 14px;
+            transform: translateY(-50%);
+            stroke: #8292aa;
+            fill: none;
+            stroke-width: 2;
+            pointer-events: none;
+        }
+
+        .learning-filters input,
+        .learning-filters select {
+            width: 100%;
+            min-width: 0;
+            height: 34px;
+            padding: 0 10px;
+            border: 1px solid #e0e7f2;
+            border-radius: 8px;
+            background: white;
+            color: #50617d;
+            font-size: 10px !important;
+            outline: none;
+        }
+
+        .learning-filters input {
+            padding-left: 32px;
+        }
+
+        .learning-filters input:focus,
+        .learning-filters select:focus {
+            border-color: #9385ff;
+            box-shadow: 0 0 0 2px rgba(96,72,239,.09);
+        }
+
+        /* RECORD ROWS */
+        .learning-list {
+            display: grid;
+            gap: 7px;
+        }
+
+        .learning-item {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 10px;
+            border: 1px solid #e8edf6;
+            border-radius: 9px;
+            background: white;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .learning-item:hover {
+            border-color: #d4cbff;
+            box-shadow: 0 3px 12px rgba(65, 56, 130, .06);
+        }
+
+        .record-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .language-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 9px;
+            background: #f0edff;
+        }
+
+        .language-icon img {
+            display: block;
+            width: 25px;
+            height: 25px;
+            object-fit: contain;
+        }
+
+        .language-icon.python {
+            background: #e8f5ff;
+        }
+
+        .language-icon.cpp {
+            background: #e8f2ff;
+        }
+
+        .language-icon.c {
+            background: #edf1ff;
+        }
+
+        .record-info {
+            min-width: 0;
+        }
+
+        .record-title-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .record-info h3 {
+            margin: 0;
+            color: #263a59;
+            font-size: 11px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .favorite-star {
+            color: #f4b63f;
+            font-size: 12px;
+        }
+
+        .record-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            color: #75849d;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .record-tag {
+            padding: 3px 6px;
+            border-radius: 5px;
+            background: #edf0ff;
+            color: #6251d7;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .record-tag.logic {
+            background: #ffe9ef;
+            color: #d64c70;
+        }
+
+        .record-tag.syntax {
+            background: #fff0e2;
+            color: #bd762a;
+        }
+
+        .record-tag.runtime {
+            background: #e3f7eb;
+            color: #23835b;
+        }
+
+        .record-tag.input {
+            background: #e5f4ff;
+            color: #247cb7;
+        }
+
+        .record-description {
+            margin: 4px 0 0;
+            color: #8794a8;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .record-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .record-date,
+        .record-duration {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #71819b;
+            font-size: 9px;
+            white-space: nowrap;
+        }
+
+        .record-date svg,
+        .record-duration svg {
+            width: 12px;
+            height: 12px;
+            stroke: #91a0b7;
+            fill: none;
+            stroke-width: 1.7;
+            flex-shrink: 0;
+        }
+
+        .record-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 49px;
+            padding: 8px 10px;
+            border: 0;
+            border-radius: 7px;
+            background: #6048ef;
+            color: white;
+            font-size: 10px !important;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: #4935d4;
+        }
+
+        .view-btn svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .delete-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 29px;
+            border: 1px solid #ffebef;
+            border-radius: 7px;
+            background: #fff0f3;
+            color: #e45a79;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #ffdee6;
+        }
+
+        .delete-btn svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .learning-empty {
+            display: none;
+            padding: 25px 10px;
+            color: #8290a7;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .learning-note {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 9px;
+            padding: 9px 11px;
+            border-radius: 7px;
+            background: linear-gradient(90deg, #f0edff, #f2f7ff);
+            color: #697c9b;
+            font-size: 9px;
+            line-height: 1.6;
+        }
+
+        .learning-note svg {
+            width: 14px;
+            height: 14px;
+            min-width: 14px;
+            stroke: #7564e9;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        /* RECORD DETAILS MODAL */
+        .record-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(17, 32, 58, .48);
+        }
+
+        .record-modal.open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 22px;
+            border: 1px solid #e3e8f4;
+            border-radius: 14px;
+            background: white;
+            box-shadow: 0 18px 50px rgba(10, 25, 50, .2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #e3e8f4;
+            border-radius: 7px;
+            background: white;
+            color: #61708a;
+            cursor: pointer;
+        }
+
+        .modal-card p {
+            color: #6d7d95;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .modal-code {
+            max-height: 220px;
+            overflow: auto;
+            padding: 13px;
+            border-radius: 8px;
+            background: #132238;
+            color: #e7efff;
+            font: 11px/1.7 Consolas, monospace;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-done {
+            margin-top: 12px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1150px) {
+            .learning-main {
+                padding: 20px 15px;
+            }
+
+            .learning-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .learning-filters {
+                grid-template-columns: minmax(0, 1fr) 120px 120px;
+            }
+
+            #sortFilter {
+                grid-column: 1 / -1;
+            }
+
+            .record-right {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                flex: 0 0 auto;
+                width: 100%;
+                min-width: 0;
+                min-height: auto;
+            }
+
+            .sidebar-profile {
+                margin-top: 12px;
+            }
+
+            .learning-main {
+                width: 100%;
+                padding: 18px 14px;
+            }
+
+            .learning-item {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .record-right {
+                justify-content: space-between;
+                padding-left: 48px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .learning-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .learning-header h1 {
+                font-size: 23px;
+            }
+
+            .learning-stats {
+                gap: 8px;
+            }
+
+            .learning-stat {
+                min-height: 78px;
+                padding: 10px;
+            }
+
+            .learning-filters {
+                grid-template-columns: 1fr;
+            }
+
+            #sortFilter {
+                grid-column: auto;
+            }
+
+            .record-right {
+                flex-wrap: wrap;
+                padding-left: 0;
+            }
+
+            .record-date {
+                white-space: normal;
+            }
+
+            .learning-note {
+                align-items: flex-start;
+            }
+        }
+    </style>
+    
+</head>
+
+<body class="app-body">
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">✳</span>
+            <span>DebugDairy</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="dashboard.html">
+                <span>▦</span> Dashboard
+            </a>
+            <a class="nav-link" href="new-analysis.html">
+                <span>⌘</span> New Analysis
+            </a>
+            <a class="nav-link active" href="my-learning.html">
+                <span>▤</span> My Learning
+            </a>
+            <a class="nav-link" href="analytics.html">
+                <span>▥</span> Analytics
+            </a>
+            <a class="nav-link" href="recurring-mistakes.html">
+                <span>↻</span> Recurring Mistakes
+            </a>
+            <a class="nav-link" href="practice.html">
+                <span>◎</span> Practice
+            </a>
+               
+        </nav>
+
+         <div class="sidebar-user">
+                <div class="user-avatar">S</div>
+                <div>
+                    <strong>Student</strong>
+                    <small>Keep learning!</small>
+                </div>
+            </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="learning-main">
+
+        <header class="learning-header">
+            <div>
+                <h1>My Learning</h1>
+                <p>Small steps build big progress.</p>
+            </div>
+
+            <a href="new-analysis.html" class="learning-btn">
+                + Analyze New Code
+            </a>
+        </header>
+
+        <!-- FOUR STATISTICS -->
+        <section class="learning-stats">
+
+            <div class="learning-stat stat-purple">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="5" y="3" width="14" height="18" rx="2"/>
+                        <path d="M9 8h6M9 12h6M9 16h3"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Total Analyses</span>
+                    <strong class="stat-number" id="totalAnalyses">4</strong>
+                    <span class="stat-foot" id="analysisFoot">Your practice history</span>
+                </div>
+            </div>
+
+            <div class="learning-stat stat-blue">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="13" rx="2"/>
+                        <path d="M8 21h8M12 17v4M9 8l-3 2 3 2M15 8l3 2-3 2"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Languages Practiced</span>
+                    <strong class="stat-number" id="languagesPracticed">4</strong>
+                    <span class="stat-foot" id="languageFoot">Java, Python, C, C++</span>
+                </div>
+            </div>
+
+            <div class="learning-stat stat-pink">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3 22 20H2L12 3Z"/>
+                        <path d="M12 9v5M12 17h.01"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Mistake Categories</span>
+                    <strong class="stat-number" id="mistakeCategories">4</strong>
+                    <span class="stat-foot">Logic, Syntax, Runtime...</span>
+                </div>
+            </div>
+
+            <div class="learning-stat stat-green">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 7v5l3 2M8 3 5 5M16 3l3 2"/>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-label">Overall Progress</span>
+                    <strong class="stat-number" id="overallProgress">75%</strong>
+                    <span class="stat-foot" id="progressFoot">Demo progress</span>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SEARCH, FILTERS AND HISTORY -->
+        <section class="learning-panel">
+
+            <div class="learning-filters">
+
+                <div class="search-wrap">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="7"/>
+                        <path d="m16 16 4 4"/>
+                    </svg>
+                    <input
+                        id="learningSearch"
+                        type="search"
+                        placeholder="Search by keyword, topic, error, or code..."
+                        aria-label="Search learning records"
+                    >
+                </div>
+
+                <select id="languageFilter" aria-label="Filter by language">
+                    <option value="all">◎ All Languages</option>
+                    <option value="java">Java</option>
+                    <option value="python">Python</option>
+                    <option value="c">C</option>
+                    <option value="cpp">C++</option>
+                    <option value="javascript">JavaScript</option>
+                </select>
+
+                <select id="categoryFilter" aria-label="Filter by category">
+                    <option value="all">▦ All Categories</option>
+                    <option value="logic">Logic Error</option>
+                    <option value="syntax">Syntax Error</option>
+                    <option value="runtime">Runtime Error</option>
+                    <option value="input">Input/Output</option>
+                    <option value="concept">Concept</option>
+                </select>
+
+                <select id="sortFilter" aria-label="Sort records">
+                    <option value="newest">▦ Latest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="az">A–Z</option>
+                </select>
+
+            </div>
+
+            <div class="learning-list" id="learningList">
+
+                <!-- JAVA -->
+                <article class="learning-item"
+                    data-language="java"
+                    data-category="logic"
+                    data-date="2026-10-11"
+                    data-minutes="45"
+                    data-search="array index out of bounds arrayindexoutofboundsexception arrays loops java index boundary">
+
+                    <div class="record-left">
+                        <div class="language-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
+                                 alt="Java logo">
+                        </div>
+                        <div class="record-info">
+                            <div class="record-title-line">
+                                <h3>Array Index Out of Bounds</h3>
+                                <span class="favorite-star">★</span>
+                            </div>
+                            <div class="record-meta">
+                                <span class="record-tag">Java</span>
+                                <span class="record-tag logic">Logic Error</span>
+                                <span class="record-tag">Arrays &amp; Loops</span>
+                            </div>
+                            <p class="record-description">
+                                You accessed an array index outside the valid range (0 to length - 1).
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="record-right">
+                        <span class="record-date">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                                <path d="M16 3v4M8 3v4M3 10h18"/>
+                            </svg>
+                            <span class="date-label">Oct 11, 2026</span>
+                        </span>
+                        <span class="record-duration">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 7v5l3 2"/>
+                            </svg>
+                            45 min
+                        </span>
+                        <div class="record-actions">
+                            <button class="view-btn" type="button"
+                                data-title="Array Index Out of Bounds"
+                                data-details="An array index was accessed outside the valid range. Java array indexes start at 0. For an array of length 3, valid indexes are 0, 1 and 2."
+                                data-code="for (int i = 0; i < arr.length; i++) {&#10;    System.out.println(arr[i]);&#10;}">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                View
+                            </button>
+                            <button class="delete-btn" type="button" aria-label="Delete record">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PYTHON -->
+                <article class="learning-item"
+                    data-language="python"
+                    data-category="syntax"
+                    data-date="2026-10-10"
+                    data-minutes="32"
+                    data-search="missing colon in if statement syntaxerror python conditionals indentation">
+
+                    <div class="record-left">
+                        <div class="language-icon python">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                                 alt="Python logo">
+                        </div>
+                        <div class="record-info">
+                            <div class="record-title-line">
+                                <h3>Missing Colon in If Statement</h3>
+                            </div>
+                            <div class="record-meta">
+                                <span class="record-tag">Python</span>
+                                <span class="record-tag syntax">Syntax Error</span>
+                                <span class="record-tag">Conditionals</span>
+                            </div>
+                            <p class="record-description">
+                                Python requires a colon (:) at the end of if, elif, and else statements.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="record-right">
+                        <span class="record-date">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                                <path d="M16 3v4M8 3v4M3 10h18"/>
+                            </svg>
+                            <span class="date-label">Oct 10, 2026</span>
+                        </span>
+                        <span class="record-duration">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 7v5l3 2"/>
+                            </svg>
+                            32 min
+                        </span>
+                        <div class="record-actions">
+                            <button class="view-btn" type="button"
+                                data-title="Missing Colon in If Statement"
+                                data-details="Python if, elif and else statements require a colon at the end. Check the statement syntax and indentation."
+                                data-code="if x > 0:&#10;    print('Positive')">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                View
+                            </button>
+                            <button class="delete-btn" type="button" aria-label="Delete record">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- JAVA RUNTIME -->
+                <article class="learning-item"
+                    data-language="java"
+                    data-category="runtime"
+                    data-date="2026-10-08"
+                    data-minutes="28"
+                    data-search="null pointer exception nullpointerexception objects oop java uninitialized reference">
+
+                    <div class="record-left">
+                        <div class="language-icon">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
+                                 alt="Java logo">
+                        </div>
+                        <div class="record-info">
+                            <div class="record-title-line">
+                                <h3>Null Pointer Exception</h3>
+                            </div>
+                            <div class="record-meta">
+                                <span class="record-tag">Java</span>
+                                <span class="record-tag runtime">Runtime Error</span>
+                                <span class="record-tag">Objects</span>
+                            </div>
+                            <p class="record-description">
+                                You are trying to access a method or field on a null object.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="record-right">
+                        <span class="record-date">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                                <path d="M16 3v4M8 3v4M3 10h18"/>
+                            </svg>
+                            <span class="date-label">Oct 8, 2026</span>
+                        </span>
+                        <span class="record-duration">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 7v5l3 2"/>
+                            </svg>
+                            28 min
+                        </span>
+                        <div class="record-actions">
+                            <button class="view-btn" type="button"
+                                data-title="Null Pointer Exception"
+                                data-details="A NullPointerException can occur when you call a method or access a field using a reference that currently points to null. Initialize the object or check for null before using it."
+                                data-code="Student student = new Student();&#10;student.display();">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                View
+                            </button>
+                            <button class="delete-btn" type="button" aria-label="Delete record">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- C++ -->
+                <article class="learning-item"
+                    data-language="cpp"
+                    data-category="syntax"
+                    data-date="2026-10-05"
+                    data-minutes="40"
+                    data-search="wrong format specifier printf c++ input output format">
+
+                    <div class="record-left">
+                        <div class="language-icon cpp">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+                                 alt="C++ logo">
+                        </div>
+                        <div class="record-info">
+                            <div class="record-title-line">
+                                <h3>Wrong Format Specifier</h3>
+                            </div>
+                            <div class="record-meta">
+                                <span class="record-tag">C++</span>
+                                <span class="record-tag syntax">Syntax Error</span>
+                                <span class="record-tag">Input/Output</span>
+                            </div>
+                            <p class="record-description">
+                                The format specifier does not match the variable type.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="record-right">
+                        <span class="record-date">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                                <path d="M16 3v4M8 3v4M3 10h18"/>
+                            </svg>
+                            <span class="date-label">Oct 5, 2026</span>
+                        </span>
+                        <span class="record-duration">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 7v5l3 2"/>
+                            </svg>
+                            40 min
+                        </span>
+                        <div class="record-actions">
+                            <button class="view-btn" type="button"
+                                data-title="Wrong Format Specifier"
+                                data-details="In C and C++, format specifiers must match the expected value type when using formatted input and output. Check the variable type and the format string."
+                                data-code="int age = 20;&#10;printf(&quot;%d&quot;, age);">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                View
+                            </button>
+                            <button class="delete-btn" type="button" aria-label="Delete record">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="learning-empty" id="learningEmpty">
+                No matching records found. Try another keyword or filter.
+            </div>
+
+            <div class="learning-note">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 3v18M3 12h18"/>
+                    <circle cx="12" cy="12" r="9"/>
+                </svg>
+                <span>
+                    Demo mode: These are sample records for frontend testing.
+                    Real analysis history will appear after connecting the analysis page
+                    to persistent storage and the backend.
+                </span>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<!-- VIEW DETAILS POPUP -->
+<div class="record-modal" id="recordModal" role="dialog"
+     aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="modalTitle">Analysis Details</h2>
+            <button class="modal-close" id="modalClose"
+                    type="button" aria-label="Close">✕</button>
+        </div>
+
+        <p id="modalDetails"></p>
+
+        <h3 style="font-size:12px;">Example correction</h3>
+        <pre class="modal-code"><code id="modalCode"></code></pre>
+
+        <button class="learning-btn modal-done" id="modalDone" type="button">
+            Done
+        </button>
+    </div>
+</div>
+
+
+<script>
+    const API_URL = "http://localhost:8081/api/analysis";
+
+    const searchInput = document.getElementById("learningSearch");
+    const languageFilter = document.getElementById("languageFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const learningList = document.getElementById("learningList");
+    const learningEmpty = document.getElementById("learningEmpty");
+    const modal = document.getElementById("recordModal");
+
+    let analysisRecords = [];
+
+    function valueOf(record, ...keys) {
+        for (const key of keys) {
+            if (record[key] !== null && record[key] !== undefined &&
+                String(record[key]).trim() !== "") {
+                return record[key];
+            }
+        }
+        return "";
+    }
+
+    function normalizeLanguage(language) {
+        const lang = String(language || "unknown").trim().toLowerCase();
+
+        if (lang === "c++" || lang === "cpp") return "cpp";
+        if (lang === "c#" || lang === "csharp") return "csharp";
+
+        return lang;
+    }
+
+    function languageLabel(language) {
+        const labels = {
+            java: "Java",
+            python: "Python",
+            c: "C",
+            cpp: "C++",
+            csharp: "C#",
+            javascript: "JavaScript"
+        };
+
+        const key = normalizeLanguage(language);
+        return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+    }
+
+    function categoryKey(category) {
+        const value = String(category || "").toLowerCase();
+
+        if (value.includes("logic")) return "logic";
+        if (value.includes("syntax")) return "syntax";
+        if (value.includes("runtime") || value.includes("exception")) {
+            return "runtime";
+        }
+        if (value.includes("input") || value.includes("output") ||
+            value.includes("i/o")) {
+            return "input";
+        }
+        if (value.includes("concept")) return "concept";
+
+        return "other";
+    }
+
+    function categoryLabel(category) {
+        const labels = {
+            logic: "Logic Error",
+            syntax: "Syntax Error",
+            runtime: "Runtime Error",
+            input: "Input/Output",
+            concept: "Concept",
+            other: "General Review"
+        };
+
+        return labels[categoryKey(category)];
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function recordTitle(record) {
+        return String(valueOf(record, "issue_title", "issueTitle") ||
+            "Code Analysis");
+    }
+
+    function recordDate(record) {
+        const date = valueOf(record, "created_at", "createdAt");
+        if (!date) return "";
+
+        const parsed = new Date(date);
+        return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString();
+    }
+
+    function formattedDate(record) {
+        const date = recordDate(record);
+        if (!date) return "Date unavailable";
+
+        return new Date(date).toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function recordExplanation(record) {
+        return String(valueOf(
+            record,
+            "explanation",
+            "what_went_wrong",
+            "whatWentWrong"
+        ) || "No explanation was saved for this analysis.");
+    }
+
+    function recordConcept(record) {
+        return String(valueOf(
+            record,
+            "concept_to_revise",
+            "conceptToRevise"
+        ) || "Review the reported issue");
+    }
+
+    function updateStatistics() {
+        const languages = new Set(
+            analysisRecords.map(r => normalizeLanguage(r.language))
+        );
+
+        const categories = new Set(
+            analysisRecords.map(r => categoryKey(r.category))
+        );
+
+        document.getElementById("totalAnalyses").textContent =
+            analysisRecords.length;
+
+        document.getElementById("languagesPracticed").textContent =
+            languages.size;
+
+        document.getElementById("mistakeCategories").textContent =
+            categories.size;
+
+        document.getElementById("languageFoot").textContent =
+            languages.size
+                ? [...languages].map(languageLabel).join(", ")
+                : "No languages yet";
+
+        document.getElementById("analysisFoot").textContent =
+            analysisRecords.length + " saved analysis" +
+            (analysisRecords.length === 1 ? "" : "es");
+
+        // No measured learning-progress score is stored in the database yet.
+        document.getElementById("overallProgress").textContent = "—";
+        document.getElementById("progressFill").style.width = "0%";
+        document.getElementById("progressFoot").textContent =
+            "Progress score not available yet";
+    }
+
+    function updateFilters() {
+        const languages = [...new Set(
+            analysisRecords.map(r => normalizeLanguage(r.language))
+        )].sort();
+
+        languages.forEach(language => {
+            const exists = [...languageFilter.options].some(
+                option => option.value === language
+            );
+
+            if (!exists) {
+                languageFilter.add(new Option(languageLabel(language), language));
+            }
+        });
+
+        const categories = [...new Set(
+            analysisRecords.map(r => categoryKey(r.category))
+        )];
+
+        categories.forEach(category => {
+            const exists = [...categoryFilter.options].some(
+                option => option.value === category
+            );
+
+            if (!exists) {
+                const labels = {
+                    logic: "Logic Error",
+                    syntax: "Syntax Error",
+                    runtime: "Runtime Error",
+                    input: "Input/Output",
+                    concept: "Concept",
+                    other: "General Review"
+                };
+
+                categoryFilter.add(
+                    new Option(labels[category] || category, category)
+                );
+            }
+        });
+    }
+
+    function renderRecords() {
+        learningList.innerHTML = "";
+
+        analysisRecords.forEach(record => {
+            const language = normalizeLanguage(record.language);
+            const category = categoryKey(record.category);
+            const title = recordTitle(record);
+            const explanation = recordExplanation(record);
+            const concept = recordConcept(record);
+            const date = recordDate(record);
+
+            const searchable = [
+                title,
+                record.language,
+                record.category,
+                explanation,
+                concept,
+                valueOf(record, "submitted_code", "submittedCode"),
+                valueOf(record, "where_is_the_mistake", "whereIsTheMistake")
+            ].join(" ");
+
+            const item = document.createElement("article");
+            item.className = "learning-item";
+            item.dataset.id = record.id;
+            item.dataset.language = language;
+            item.dataset.category = category;
+            item.dataset.date = date;
+            item.dataset.search = searchable;
+
+            item.innerHTML = `
+                <div class="record-left">
+                    <div class="language-icon ${escapeHtml(language)}">
+                        <span>${escapeHtml(languageLabel(language).slice(0, 2))}</span>
+                    </div>
+
+                    <div class="record-info">
+                        <div class="record-title-line">
+                            <h3>${escapeHtml(title)}</h3>
+                        </div>
+
+                        <div class="record-meta">
+                            <span class="record-tag">
+                                ${escapeHtml(languageLabel(language))}
+                            </span>
+                            <span class="record-tag ${escapeHtml(category)}">
+                                ${escapeHtml(categoryLabel(record.category))}
+                            </span>
+                            <span class="record-tag">
+                                ${escapeHtml(concept)}
+                            </span>
+                        </div>
+
+                        <p class="record-description">
+                            ${escapeHtml(explanation)}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="record-right">
+                    <span class="record-date">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="16" rx="2"/>
+                            <path d="M16 3v4M8 3v4M3 10h18"/>
+                        </svg>
+                        <span class="date-label">
+                            ${escapeHtml(formattedDate(record))}
+                        </span>
+                    </span>
+
+                    <div class="record-actions">
+                        <button class="view-btn" type="button"
+                                data-action="view" data-id="${escapeHtml(record.id)}">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            View
+                        </button>
+
+                        <button class="delete-btn" type="button"
+                                data-action="delete" data-id="${escapeHtml(record.id)}"
+                                aria-label="Delete record">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v7M14 10v7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            learningList.appendChild(item);
+        });
+
+        filterLearningRecords();
+    }
+
+    function filterLearningRecords() {
+        const searchText = searchInput.value.trim().toLowerCase();
+        const selectedLanguage = languageFilter.value;
+        const selectedCategory = categoryFilter.value;
+        const sortValue = sortFilter.value;
+
+        const items = Array.from(
+            learningList.querySelectorAll(".learning-item")
+        );
+
+        items.sort((a, b) => {
+            if (sortValue === "az") {
+                return a.querySelector("h3").textContent.localeCompare(
+                    b.querySelector("h3").textContent
+                );
+            }
+
+            return sortValue === "oldest"
+                ? a.dataset.date.localeCompare(b.dataset.date)
+                : b.dataset.date.localeCompare(a.dataset.date);
+        });
+
+        items.forEach(item => {
+            learningList.appendChild(item);
+
+            const matchesSearch =
+                (item.dataset.search + " " + item.textContent)
+                    .toLowerCase().includes(searchText);
+
+            const matchesLanguage =
+                selectedLanguage === "all" ||
+                item.dataset.language === selectedLanguage;
+
+            const matchesCategory =
+                selectedCategory === "all" ||
+                item.dataset.category === selectedCategory;
+
+            item.style.display =
+                matchesSearch && matchesLanguage && matchesCategory
+                    ? "grid" : "none";
+        });
+
+        const visibleCount = items.filter(
+            item => item.style.display !== "none"
+        ).length;
+
+        learningEmpty.style.display = visibleCount === 0 ? "block" : "none";
+
+        if (analysisRecords.length === 0) {
+            learningEmpty.textContent = "No saved analyses found yet.";
+        } else {
+            learningEmpty.textContent =
+                "No matching records found. Try another keyword or filter.";
+        }
+    }
+
+    async function loadLearningRecords() {
+        learningList.innerHTML = "";
+        learningEmpty.style.display = "block";
+        learningEmpty.textContent = "Loading your saved analyses...";
+
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error("Server returned status " + response.status);
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data)) {
+                throw new Error("The analysis API did not return a list.");
+            }
+
+            analysisRecords = data;
+            updateFilters();
+            updateStatistics();
+            renderRecords();
+
+            const note = document.querySelector(".learning-note span");
+            if (note) {
+                note.textContent =
+                    "Your learning history is loaded from saved database records.";
+            }
+        } catch (error) {
+            console.error("Could not load learning history:", error);
+            analysisRecords = [];
+            updateStatistics();
+
+            learningList.innerHTML = "";
+            learningEmpty.style.display = "block";
+            learningEmpty.textContent =
+                "Could not load your analyses. Make sure the backend is running on port 8081, then refresh this page.";
+
+            const note = document.querySelector(".learning-note span");
+            if (note) {
+                note.textContent =
+                    "Unable to connect to the backend. Your saved records have not been deleted.";
+            }
+        }
+    }
+
+    function showRecordDetails(record) {
+        const title = recordTitle(record);
+        const submittedCode = valueOf(
+            record, "submitted_code", "submittedCode"
+        );
+        const correctedCode = valueOf(
+            record, "corrected_code", "correctedCode"
+        );
+const details = [
+    "Language: " + languageLabel(record.language),
+    "Category: " + categoryLabel(record.category),
+    "",
+    "EXPLANATION",
+    recordExplanation(record),
+    "",
+    "WHERE IS THE MISTAKE?",
+    valueOf(record, "where_is_the_mistake", "whereIsTheMistake")
+        || "No mistake location was saved.",
+    "",
+    "WHY DID IT HAPPEN?",
+    valueOf(record, "why_it_happened", "whyItHappened")
+        || "No additional reason was saved.",
+    "",
+    "HOW TO CORRECT IT?",
+    valueOf(record, "how_to_correct_it", "howToCorrectIt")
+        || "No correction advice was saved.",
+    "",
+    "CONCEPT TO REVISE",
+    recordConcept(record)
+].join("\n");
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalDetails").style.whiteSpace = "pre-line";
+        document.getElementById("modalDetails").textContent = details;
+        document.getElementById("modalCode").textContent =
+            correctedCode || submittedCode || "No code was saved.";
+
+        const codeHeading = document.querySelector(".modal-card h3");
+        if (codeHeading) {
+            codeHeading.textContent = correctedCode
+                ? "Corrected code"
+                : "Submitted code";
+        }
+
+        modal.classList.add("open");
+        document.getElementById("modalClose").focus();
+    }
+
+    learningList.addEventListener("click", async function(event) {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+
+        const record = analysisRecords.find(
+            item => String(item.id) === button.dataset.id
+        );
+
+        if (!record) return;
+
+        if (button.dataset.action === "view") {
+            showRecordDetails(record);
+            return;
+        }
+
+        if (button.dataset.action === "delete") {
+            if (!confirm("Permanently delete this saved analysis?")) return;
+
+            button.disabled = true;
+
+            try {
+                const response = await fetch(
+                    API_URL + "/" + encodeURIComponent(record.id),
+                    { method: "DELETE" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Delete failed with status " + response.status);
+                }
+
+                analysisRecords = analysisRecords.filter(
+                    item => String(item.id) !== String(record.id)
+                );
+
+                updateStatistics();
+                renderRecords();
+            } catch (error) {
+                console.error("Could not delete analysis:", error);
+                alert("The analysis could not be deleted. Please check the backend and try again.");
+                button.disabled = false;
+            }
+        }
+    });
+
+    function closeModal() {
+        modal.classList.remove("open");
+    }
+
+    searchInput.addEventListener("input", filterLearningRecords);
+    languageFilter.addEventListener("change", filterLearningRecords);
+    categoryFilter.addEventListener("change", filterLearningRecords);
+    sortFilter.addEventListener("change", filterLearningRecords);
+
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    document.getElementById("modalDone").addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function(event) {
+        if (event.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") closeModal();
+    });
+
+    loadLearningRecords();
+</script>
+
+</body>
+</html>

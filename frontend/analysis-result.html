@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis Result | DebugDairy</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+:root {
+    --navy: #132744;
+    --purple: #6952df;
+    --purple-light: #f0edff;
+    --text: #263a57;
+    --muted: #7c8ba1;
+    --border: #e3eaf4;
+    --bg: #f4f7fc;
+    --green: #18875a;
+    --red: #bd4057;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button, a { font: inherit; }
+
+.app-layout {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: clip;
+}
+
+.app-layout > .sidebar {
+    position: relative;
+    inset: auto;
+    flex: 0 0 245px;
+    width: 245px;
+    min-width: 245px;
+    min-height: 100vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.app-layout > .result-main {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 26px 30px;
+    background: var(--bg);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.header-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.result-title {
+    margin: 0 0 7px;
+    color: var(--navy);
+    font-size: 27px;
+}
+
+.result-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.demo-label {
+    padding: 7px 10px;
+    border: 1px solid #e6e0ff;
+    border-radius: 7px;
+    background: white;
+    color: #6552c4;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.result-status {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 17px;
+    margin-bottom: 18px;
+    border: 1px solid #d8e3f5;
+    border-radius: 11px;
+    background: #eef5ff;
+    color: #244e83;
+}
+
+.status-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 39px;
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+    background: #dceaff;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.status-copy { min-width: 0; }
+
+.status-copy strong,
+.status-copy small {
+    display: block;
+}
+
+.status-copy strong {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.status-copy small {
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.result-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 21px 0 12px;
+}
+
+.result-section-title h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 16px;
+}
+
+.section-caption {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
+.result-card {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(20,45,80,.035);
+}
+
+.result-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 11px;
+    color: var(--navy);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.card-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 15px;
+}
+
+.result-card p {
+    margin: 0;
+    color: #687990;
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.result-line {
+    display: block;
+    max-width: 100%;
+    margin-top: 10px;
+    padding: 9px 10px;
+    border-radius: 7px;
+    background: #fff0f2;
+    color: var(--red);
+    font: 12px/1.7 Consolas, monospace;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.result-line[hidden] { display: none !important; }
+
+.category-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.result-tag {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: var(--purple-light);
+    color: #5948c5;
+    font-size: 11px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.result-tag.green {
+    background: #e3f8ec;
+    color: #17845a;
+}
+
+.correct-code-card {
+    min-width: 0;
+    margin-top: 14px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(20,45,80,.035);
+}
+
+.code-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 13px;
+}
+
+.code-heading h3 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 15px;
+}
+
+.correct-code {
+    max-width: 100%;
+    min-height: 60px;
+    margin: 0;
+    padding: 17px;
+    overflow: auto;
+    border-radius: 8px;
+    background: #142139;
+    color: #e5edf9;
+    font: 12px/1.85 Consolas, monospace;
+    white-space: pre;
+    tab-size: 4;
+}
+
+.related-concept {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 19px;
+    margin-top: 14px;
+    border: 1px solid #e3ddff;
+    border-radius: 12px;
+    background: linear-gradient(110deg, #f7f5ff, #fff 90%);
+}
+
+.concept-info { min-width: 0; }
+
+.concept-label {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: var(--purple);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.related-concept h3 {
+    margin: 0 0 7px;
+    color: var(--navy);
+    font-size: 16px;
+}
+
+.related-concept p {
+    margin: 0;
+    color: #718096;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.concept-button,
+.result-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 11px 15px;
+    border: 1px solid var(--purple);
+    border-radius: 8px;
+    background: var(--purple);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.concept-button {
+    flex-shrink: 0;
+}
+
+.concept-button:hover,
+.result-button:hover {
+    background: #5140c4;
+    border-color: #5140c4;
+}
+
+.result-button.secondary {
+    border-color: #d7e1ef;
+    background: white;
+    color: #244064;
+}
+
+.result-button.secondary:hover {
+    background: #f0f4fb;
+    border-color: #b9c9df;
+}
+
+.result-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+    margin-top: 18px;
+}
+
+.result-notice {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid #d7e8f7;
+    border-radius: 8px;
+    background: #eef5ff;
+    color: #244e83;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.result-notice.visible { display: block; }
+
+.sidebar-user {
+    position: static !important;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding: 17px 4px 8px;
+    border-top: 1px solid rgba(255,255,255,.15);
+}
+
+.user-avatar {
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+}
+
+.sidebar-user strong,
+.sidebar-user small {
+    display: block;
+    line-height: 1.5;
+}
+
+.sidebar-user strong { color: white; font-size: 12px; }
+.sidebar-user small { color: #b9c9df; font-size: 10px; }
+
+@media (max-width: 1000px) {
+    .app-layout > .sidebar {
+        flex-basis: 220px;
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .app-layout > .result-main { padding: 22px 18px; }
+}
+
+@media (max-width: 760px) {
+    .app-layout { flex-direction: column; }
+
+    .app-layout > .sidebar {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+    }
+
+    .app-layout > .result-main {
+        width: 100%;
+        min-width: 0;
+        padding: 20px 15px;
+    }
+
+    .sidebar-user { margin-top: 15px; }
+    .result-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+    .result-header { flex-direction: column; }
+    .result-title { font-size: 24px; }
+    .result-actions { grid-template-columns: 1fr; }
+
+    .related-concept {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .concept-button { width: 100%; }
+}
+</style>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="app-body">
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">✳</span>
+            <span>DebugDairy</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="dashboard.html"><span>▦</span> Dashboard</a>
+            <a class="nav-link active" href="new-analysis.html"><span>⌘</span> New Analysis</a>
+            <a class="nav-link" href="my-learning.html"><span>▤</span> My Learning</a>
+            <a class="nav-link" href="analytics.html"><span>▥</span> Analytics</a>
+            <a class="nav-link" href="recurring-mistakes.html"><span>↻</span> Recurring Mistakes</a>
+            <a class="nav-link" href="practice.html"><span>◎</span> Practice</a>
+        </nav>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">S</div>
+            <div>
+                <strong>Student</strong>
+                <small>Keep learning!</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="result-main">
+
+        <header class="result-header">
+            <div>
+                <div class="header-label">✦ CODE REVIEW · LEARN · IMPROVE</div>
+                <h1 class="result-title">Analysis Result</h1>
+                <p class="result-subtitle">
+                    Understand your mistake, fix your code, and learn the concept behind it.
+                </p>
+            </div>
+            <span class="demo-label" id="resultMode">Sample result</span>
+        </header>
+
+        <section class="result-status" id="resultBanner" aria-live="polite">
+            <div class="status-icon" id="resultIcon">✦</div>
+            <div class="status-copy">
+                <strong id="errorTitle">Sample analysis result</strong>
+                <small id="errorType">Java · Array boundary example</small>
+            </div>
+        </section>
+
+        <div class="result-section-title">
+            <h2>Understand the Mistake</h2>
+            <span class="section-caption">Analysis summary</span>
+        </div>
+
+        <div class="result-grid">
+            <section class="result-card">
+                <h3><span class="card-icon">⚠</span> What went wrong?</h3>
+                <p id="whatWentWrong">
+                    The loop condition allows the index to reach the array length,
+                    which is not a valid array index.
+                </p>
+            </section>
+
+            <section class="result-card">
+                <h3><span class="card-icon">⌕</span> Where is the mistake?</h3>
+                <p id="whereMistake">
+                    The loop condition should stop before the index reaches the array length.
+                </p>
+                <code class="result-line" id="mistakeLine">i &lt;= arr.length</code>
+            </section>
+
+            <section class="result-card">
+                <h3><span class="card-icon">◇</span> Why did it happen?</h3>
+                <p id="whyHappened">
+                    Java arrays use zero-based indexing. An array of length 3 has
+                    valid indexes 0, 1, and 2.
+                </p>
+            </section>
+
+            <section class="result-card">
+                <h3><span class="card-icon">✓</span> How to correct it?</h3>
+                <p id="howToCorrect">
+                    Change the loop condition to i &lt; arr.length so the loop
+                    stays within valid array indexes.
+                </p>
+                <div class="category-row">
+                    <span class="result-tag" id="mistakeCategory">Logic / Boundary Error</span>
+                    <span class="result-tag green" id="severityTag">Review Recommended</span>
+                </div>
+            </section>
+        </div>
+
+        <section class="correct-code-card">
+            <div class="code-heading">
+                <h3>⌘ Corrected Code</h3>
+                <button type="button" id="copyCodeButton" class="result-button secondary">
+                    ▣ Copy Code
+                </button>
+            </div>
+            <pre class="correct-code"><code id="correctedCode">int[] arr = {10, 20, 30};
+
+for (int i = 0; i < arr.length; i++) {
+    System.out.println(arr[i]);
+}</code></pre>
+        </section>
+
+        <div class="result-section-title">
+            <h2>Recommended Learning</h2>
+            <span class="section-caption">Based on available error details</span>
+        </div>
+
+        <div class="result-grid">
+            <section class="result-card">
+                <h3><span class="card-icon">▤</span> Mistake Category</h3>
+                <p id="categoryDescription">
+                    Boundary and indexing mistakes happen when code accesses
+                    a position outside the valid range.
+                </p>
+                <div class="category-row">
+                    <span class="result-tag" id="categoryTag">Array / Loop</span>
+                </div>
+            </section>
+
+            <section class="result-card">
+                <h3><span class="card-icon">✦</span> Concept to Revise</h3>
+                <p id="conceptSummary">
+                    Review array indexing and loop boundaries to understand
+                    why the error occurs and how to prevent it.
+                </p>
+                <div class="category-row">
+                    <span class="result-tag green" id="conceptTag">Java · Arrays</span>
+                </div>
+            </section>
+        </div>
+
+        <section class="correct-code-card" id="relatedConceptCard">
+            <div class="code-heading">
+                <h3>▧ Understand the Concept</h3>
+                <span class="result-tag">Related learning guide</span>
+            </div>
+
+            <p id="conceptReason" style="margin:0 0 12px;color:#687990;font-size:12px;line-height:1.8;">
+                Learn the concept behind this error and understand how to prevent it.
+            </p>
+
+            <div class="related-concept">
+                <div class="concept-info">
+                    <span class="concept-label">RECOMMENDED CONCEPT</span>
+                    <h3 id="conceptTitle">Array Indexing</h3>
+                    <p id="conceptDescription">
+                        Understand zero-based indexes, array boundaries, and safe loop conditions.
+                    </p>
+                </div>
+
+                <a id="conceptLink"
+                   href="concept-popup.html"
+                   class="concept-button">
+                    Explore Concepts <span aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </section>
+
+        <div class="result-actions">
+<a href="./new-analysis.html" class="new-analysis-btn">
+    <span>＋</span> New Analysis
+</a>
+            <a class="result-button secondary" href="my-learning.html">▤ My Learning</a>
+        </div>
+
+        <div class="result-notice" id="resultNotice" role="status" aria-live="polite"></div>
+
+    </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function showNotice(message) {
+    const notice = $("resultNotice");
+    notice.textContent = message;
+    notice.classList.add("visible");
+}
+function getStoredAnalysis() {
+    const keys = [
+        "debugDairyAnalysis",
+        "analysisResult",
+        "analysisData"
+    ];
+
+    for (const key of keys) {
+        try {
+            const raw = sessionStorage.getItem(key);
+
+            if (!raw) {
+                continue;
+            }
+
+            const data = JSON.parse(raw);
+
+            if (
+                data &&
+                typeof data === "object" &&
+                !Array.isArray(data) &&
+                (
+                    data.id ||
+                    data.issueTitle ||
+                    data.whatWentWrong ||
+                    data.originalCode ||
+                    data.submittedCode
+                )
+            ) {
+                return data;
+            }
+        } catch (error) {
+            console.warn(
+                "Unable to read stored analysis:",
+                error
+            );
+        }
+    }
+
+    return null;
+}
+
+/*
+  More specific concepts come first to reduce keyword collisions.
+  Keyword matching provides a suggestion, not a guaranteed diagnosis.
+*/
+
+const conceptRules = [
+    {
+        id: "strings",
+        title: "String Handling",
+        topic: "Strings",
+        category: "String Error",
+        description: "Learn string comparison, character access, immutability, and common string methods.",
+        keywords: [
+            "stringindexoutofboundsexception",
+            "charat(",
+            "string.length",
+            "string comparison",
+            "string handling",
+            "equals("
+        ]
+    },
+    {
+        id: "input",
+        title: "Input Handling",
+        topic: "Input",
+        category: "Input Error",
+        description: "Learn how to read, validate, and handle user input safely.",
+        keywords: [
+            "inputmismatchexception",
+            "nosuchelementexception",
+            "numberformatexception",
+            "scanner",
+            "nextint(",
+            "invalid input",
+            "input handling"
+        ]
+    },
+    {
+        id: "collections",
+        title: "ArrayList",
+        topic: "Collections",
+        category: "Collection Error",
+        description: "Understand ArrayList operations, indexes, iteration, and collection methods.",
+        keywords: [
+            "concurrentmodificationexception",
+            "arraylist",
+            "collections",
+            "list.add(",
+            "list.remove(",
+            "array list"
+        ]
+    },
+    {
+        id: "recursion",
+        title: "Recursion",
+        topic: "Recursion",
+        category: "Recursion Error",
+        description: "Learn recursive calls, base cases, and how recursion terminates.",
+        keywords: [
+            "stackoverflowerror",
+            "stack overflow",
+            "base case",
+            "recursive call",
+            "recursion"
+        ]
+    },
+    {
+        id: "oop",
+        title: "Object-Oriented Programming",
+        topic: "OOP",
+        category: "OOP / Type Error",
+        description: "Review classes, objects, inheritance, abstraction, interfaces, and polymorphism.",
+        keywords: [
+            "abstract",
+            "interface",
+            "cannot be instantiated",
+            "classcastexception",
+            "inheritance",
+            "polymorphism",
+            "method does not override",
+            "oop"
+        ]
+    },
+    {
+        id: "methods",
+        title: "Methods",
+        topic: "Methods",
+        category: "Method Error",
+        description: "Understand method declarations, parameters, return values, and method calls.",
+        keywords: [
+            "missing return statement",
+            "method signature",
+            "non-static",
+            "return type",
+            "method call",
+            "wrong number of arguments",
+            "methods"
+        ]
+    },
+    {
+        id: "sorting",
+        title: "Bubble Sort",
+        topic: "Sorting",
+        category: "Sorting Logic",
+        description: "Learn adjacent comparisons, swapping, and sorting passes.",
+        keywords: [
+            "bubble sort",
+            "sorting",
+            "sort order",
+            "arr[j] > arr[j + 1]"
+        ]
+    },
+    {
+        id: "searching",
+        title: "Linear Search",
+        topic: "Searching",
+        category: "Searching Logic",
+        description: "Learn to search an array one element at a time and handle a missing target.",
+        keywords: [
+            "linear search",
+            "element not found",
+            "searching",
+            "target not found"
+        ]
+    },
+    {
+        id: "loops",
+        title: "Loop Boundaries",
+        topic: "Loops",
+        category: "Loop Logic",
+        description: "Understand loop conditions, iteration counts, and off-by-one errors.",
+        keywords: [
+            "infinite loop",
+            "loop condition",
+            "loop boundary",
+            "off-by-one",
+            "off by one",
+            "loop boundaries",
+            "i <= arr.length",
+            "i<=arr.length"
+        ]
+    },
+    {
+        id: "array",
+        title: "Array Indexing",
+        topic: "Arrays",
+        category: "Array / Boundary Error",
+        description: "Understand zero-based indexes, valid array boundaries, and safe array traversal.",
+        keywords: [
+            "arrayindexoutofboundsexception",
+            "index out of bounds",
+            "array indexing",
+            "array index",
+            "arr.length",
+            "array"
+        ]
+    },
+    {
+        id: "exceptions",
+        title: "Exception Handling",
+        topic: "Exception Handling",
+        category: "Runtime Error",
+        description: "Learn how to handle runtime errors, prevent division by zero, and use try-catch blocks safely.",
+        keywords: [
+            "arithmeticexception",
+            "division by zero",
+            "divide by zero",
+            "exception handling",
+            "try-catch",
+            "try catch",
+            "safe division"
+        ]
+    }
+];
+
+
+function findConcept(analysis) {
+        // Prioritize the data structure explicitly used in the submitted code.
+    const submittedCode = String(
+        analysis.originalCode || analysis.submittedCode || ""
+    );
+
+    if (/\bHashMap\s*</i.test(submittedCode) ||
+        /\bHashMap\s+\w+\s*=/.test(submittedCode)) {
+        return {
+            id: "HashMap",
+            title: "HashMap",
+            topic: "Collections",
+            category: "HashMap / Collections",
+            description: "Learn HashMap key-value pairs, put(), get(), remove(), and size()."
+        };
+    }
+    // Get the concept recommended by the AI.
+    const recommendedConcept = String(
+        analysis.conceptToRevise || ""
+    ).trim().toLowerCase();
+
+    // Match the AI recommendation against existing learning guides.
+    const normalize = (value) =>
+        String(value || "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "");
+
+    const match = conceptRules.find(rule => {
+        const id = normalize(rule.id);
+        const title = normalize(rule.title);
+        const topic = normalize(rule.topic);
+        const recommendation = normalize(recommendedConcept);
+
+        return recommendation && (
+            recommendation === id ||
+            recommendation === title ||
+            recommendation === topic ||
+            recommendation.includes(title) ||
+            title.includes(recommendation) ||
+            recommendation.includes(topic) ||
+            recommendation.includes(id)
+        );
+    });
+
+    // Return a guide only when it matches the AI recommendation.
+    return match || null;
+}
+
+
+
+
+function setText(id, value) {
+    const element = $(id);
+    if (element && value !== undefined && value !== null &&
+        String(value).trim() !== "") {
+        element.textContent = String(value);
+    }
+}
+
+function setOptionalText(id, value) {
+    const element = $(id);
+    if (element && value !== undefined && value !== null &&
+        String(value).trim() !== "") {
+        element.textContent = String(value);
+        return true;
+    }
+    return false;
+}
+
+function renderConcept(analysis) {
+    const match = findConcept(analysis);
+    const aiConcept = analysis.conceptToRevise || "";
+    const language = analysis.language || "Programming";
+
+    if (match) {
+        setText("conceptTitle", match.title);
+        setText("conceptDescription", match.description);
+        setText("conceptTag", `${language} · ${match.topic}`);
+        setText("mistakeCategory", analysis.category || match.category);
+        setText("categoryTag", match.topic);
+        setText(
+            "categoryDescription",
+            `This issue may be related to ${match.title}. Confirm the cause using the original code and complete error message.`
+        );
+        setText(
+            "conceptSummary",
+            `Review ${match.title} to understand the concept and prevent similar mistakes.`
+        );
+        setText(
+            "conceptReason",
+            "Recommended by AI based on the submitted code. A dedicated guide may not be available yet."
+        );
+
+      $("conceptLink").href =
+    `concept-popup.html?concept=${encodeURIComponent(match.id)}`;
+
+        $("conceptLink").textContent = "Learn Concept ↗";
+        $("conceptLink").setAttribute(
+            "aria-label",
+            `Learn about ${match.title}`
+        );
+    } else {
+        setText(
+    "conceptTitle",
+    aiConcept ? `Recommended: ${aiConcept}` : "Explore All Programming Concepts"
+);
+        setText(
+            "conceptDescription",
+            "Browse arrays, strings, loops, input handling, OOP, methods, recursion, searching, sorting, and ArrayList."
+        );
+        setText("conceptTag", `${language} · General Review`);
+        setText("mistakeCategory", analysis.category || "Needs Review");
+        setText("categoryTag", "General");
+        setText(
+            "categoryDescription",
+            "The available error details did not match a specific concept confidently."
+        );
+        setText(
+            "conceptSummary",
+            aiConcept
+    ? `Learn about ${aiConcept} using the explanation above. A dedicated guide may not be available yet.`
+    : "Explore the concept library and choose a topic that matches the error in your code."
+        );
+        setText(
+            "conceptReason",
+            "No confident concept match was found. Open the concept library to choose the topic yourself."
+        );
+
+        // Open the concept library without falsely labelling Array as the match.
+        $("conceptLink").href = "concept-popup.html";
+        $("conceptLink").textContent = "Explore All Concepts ↗";
+        $("conceptLink").setAttribute(
+            "aria-label",
+            "Explore all programming concepts"
+        );
+    }
+}
+
+
+
+function renderAnalysis(analysis) {
+    const language = analysis.language || "Java";
+
+    const originalCode =
+        analysis.originalCode || analysis.submittedCode || "";
+
+    const issueTitle =
+        analysis.issueTitle ||
+        analysis.errorTitle ||
+        analysis.errorType ||
+        "Code Review";
+
+    const hasAnalysis = Boolean(
+        analysis.id ||
+        analysis.issueTitle ||
+        analysis.whatWentWrong ||
+        originalCode
+    );
+
+    setText(
+        "resultMode",
+        hasAnalysis ? "AI Analysis Complete" : "Sample Result"
+    );
+
+    setText("errorTitle", issueTitle);
+
+    setText(
+        "errorType",
+        `${language} · ${analysis.category || "Code Review"}`
+    );
+
+    // Each section uses its own AI-generated field.
+    setText(
+        "whatWentWrong",
+        analysis.whatWentWrong ||
+        "No separate explanation was provided."
+    );
+
+    setText(
+        "whereMistake",
+        analysis.whereIsTheMistake ||
+        "No specific mistake location was identified."
+    );
+
+    setText(
+        "whyHappened",
+        analysis.whyItHappened ||
+        "The underlying cause could not be determined confidently."
+    );
+
+    setText(
+        "howToCorrect",
+        analysis.howToCorrectIt ||
+        "Review the submitted code and verify the suggested correction."
+    );
+
+    const correctedCode =
+        analysis.correctedCode || analysis.fixedCode || "";
+
+    $("correctedCode").textContent =
+        correctedCode || "No corrected code was provided.";
+
+    $("mistakeLine").textContent =
+        analysis.whereIsTheMistake || issueTitle;
+
+    $("mistakeLine").hidden = !hasAnalysis;
+
+    $("resultBanner").className = "result-status";
+    $("resultIcon").textContent = "✓";
+
+    setText(
+        "severityTag",
+        analysis.howToCorrectIt?.trim().toLowerCase().startsWith("no correction needed")
+    ? "No Fix Needed"
+    : hasAnalysis
+        ? "AI Suggested Fix"
+        : "Sample"
+    );
+
+    renderConcept({
+        ...analysis,
+        language,
+        errorTitle: issueTitle,
+        errorMessage: [
+            analysis.whatWentWrong,
+            analysis.whereIsTheMistake,
+            analysis.whyItHappened
+        ].filter(Boolean).join(" "),
+        originalCode,
+        category: analysis.category || "General"
+    });
+}
+
+$("copyCodeButton").addEventListener("click", async () => {
+    const code = $("correctedCode").textContent;
+
+    try {
+        await navigator.clipboard.writeText(code);
+        showNotice("Corrected code copied successfully.");
+    } catch (error) {
+        const textArea = document.createElement("textarea");
+        textArea.value = code;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        let copied = false;
+
+        try {
+            copied = document.execCommand("copy");
+        } catch (copyError) {
+            copied = false;
+        }
+
+        textArea.remove();
+
+        showNotice(
+            copied
+                ? "Corrected code copied successfully."
+                : "Copy unavailable. Select the code and press Ctrl+C."
+        );
+    }
+});
+
+const params = new URLSearchParams(window.location.search);
+const storedAnalysis = getStoredAnalysis() || {};
+const analysis = {
+    ...storedAnalysis,
+
+    id: storedAnalysis.id,
+
+    language:
+        params.get("language") ||
+        storedAnalysis.language ||
+        sessionStorage.getItem("debugDairyLanguage") ||
+        "Java",
+
+    issueTitle:
+        storedAnalysis.issueTitle ||
+        storedAnalysis.errorTitle ||
+        "Code Review",
+
+    errorTitle:
+        params.get("errorTitle") ||
+        storedAnalysis.errorTitle ||
+        storedAnalysis.issueTitle ||
+        "",
+
+    conceptToRevise:
+        storedAnalysis.conceptToRevise || "",
+
+    whatWentWrong:
+        storedAnalysis.whatWentWrong || "",
+
+    whereIsTheMistake:
+        storedAnalysis.whereIsTheMistake || "",
+
+    whyItHappened:
+        storedAnalysis.whyItHappened || "",
+
+    howToCorrectIt:
+        storedAnalysis.howToCorrectIt || "",
+
+    errorMessage:
+        params.get("errorMessage") ||
+        params.get("error") ||
+        storedAnalysis.errorMessage ||
+        storedAnalysis.error ||
+        storedAnalysis.whatWentWrong ||
+        "",
+
+    originalCode:
+        params.get("originalCode") ||
+        params.get("code") ||
+        storedAnalysis.originalCode ||
+        storedAnalysis.submittedCode ||
+        sessionStorage.getItem("debugDairyCode") ||
+        "",
+
+    correctedCode:
+        params.get("correctedCode") ||
+        storedAnalysis.correctedCode ||
+        storedAnalysis.fixedCode ||
+        ""
+};
+
+renderAnalysis(analysis);
+</script>
+</body>
+</html>
